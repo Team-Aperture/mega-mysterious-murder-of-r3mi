@@ -1,0 +1,26 @@
+{
+  "name": "mega-mysterious-murder-of-r3mi",
+  "private": true,
+  "version": "0.1.0",
+  "description": "THE MEGA MYSTERIOUS MURDER OF R-3MI – A Completely Non-Canon Team_Aperture Mystery. Kapitel 0 (vertical slice).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm run test && npm run build"
+  },
+  "dependencies": {
+    "pixi.js": "8.21.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@types/node": "22.19.1",
+    "typescript": "5.9.3",
+    "vite": "7.3.7",
+    "vitest": "3.2.7"
+  }
+}

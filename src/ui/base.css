@@ -1,0 +1,52 @@
+@import '@fontsource/bungee/400.css';
+@import '@fontsource/nunito/400.css';
+@import '@fontsource/nunito/700.css';
+@import '@fontsource/nunito/900.css';
+@import '@fontsource/special-elite/400.css';
+@import '@fontsource/luckiest-guy/400.css';
+
+:root {
+  --bg: #07081a;
+  --ink: #f4eedc;
+  --ink-dim: #b9b3c9;
+  --amber: #ffb22e;
+  --amber-deep: #c9771a;
+  --green: #5dff9a;
+  --green-deep: #2ecf62;
+  --red: #ff6f61;
+  --red-deep: #c0322c;
+  --panel: rgba(16, 15, 34, 0.92);
+  --panel-edge: rgba(255, 178, 46, 0.35);
+  --font-ui: 'Nunito', system-ui, sans-serif;
+  --font-title: 'Bungee', 'Nunito', sans-serif;
+  --font-comic: 'Luckiest Guy', 'Nunito', sans-serif;
+  --font-type: 'Special Elite', 'Courier New', monospace;
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#stage, #ui { position: fixed; inset: 0; }
+#stage canvas { display: block; width: 100%; height: 100%; }
+#ui { pointer-events: none; }
+#ui > * { pointer-events: auto; }
+button { font: inherit; color: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

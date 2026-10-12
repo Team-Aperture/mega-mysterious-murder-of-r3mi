@@ -54,7 +54,9 @@ export class RigView {
       sprite.roundPixels = false;
       this.layer.addChild(sprite);
       const part = def.part === undefined ? def.name : def.part;
-      this.slots.push({ def, bone: sk.bone(def.bone), sprite, part: null, baseZ: def.z });
+      sprite.visible = false;
+      // sentinel so the first setAttachment always applies (even for an empty default)
+      this.slots.push({ def, bone: sk.bone(def.bone), sprite, part: '\u0000', baseZ: def.z });
       this.setAttachment(this.slots[this.slots.length - 1], part);
       sprite.zIndex = def.z;
     }

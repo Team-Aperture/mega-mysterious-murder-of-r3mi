@@ -70,6 +70,7 @@ export class Dialogue {
   private paActive: Active | null = null;
   private choiceEl: HTMLElement | null = null;
   private pending = 0;
+  private timers: { left: number; done: () => void }[] = [];
   settings: DialogueSettings = { speed: 1, vtgmGerman: false, reduced: false };
 
   constructor(readonly root: HTMLElement, readonly deps: DialogueDeps) {
@@ -127,9 +128,12 @@ export class Dialogue {
   /** Presents choices; resolves with the chosen index. */
   choose(options: string[]): Promise<number> {
     this.choiceEl?.remove();
-    const wrap = h('div', { class: 'choices', role: 'menu' });
+    // ignores input for a moment, so a tap meant to advance the previous line can't pick an answer
+    const wrap = h('div', { class: 'choices arming', role: 'menu' });
+    window.setTimeout(() => wrap.classList.remove('arming'), 400);
     return new Promise((resolve) => {
       const pick = (i: number) => {
+        if (wrap.classList.contains('arming')) return;
         wrap.remove();
         this.choiceEl = null;
         document.removeEventListener('keydown', onKey, true);
@@ -206,16 +210,16 @@ export class Dialogue {
       }
     }
     if (this.pending > 0) this.pending = Math.max(0, this.pending - dt);
+    if (this.timers.length) {
+      const due = this.timers.filter((t) => (t.left -= dt * this.settings.speed) <= 0);
+      if (due.length) { this.timers = this.timers.filter((t) => t.left > 0); for (const t of due) t.done(); }
+    }
     this.position();
   }
 
-  /** Waits in dialogue time (so cutscene seeking stays consistent). */
+  /** Waits in dialogue time, stepped by update() (so cutscene seeking stays consistent). */
   private wait(s: number): Promise<void> {
-    return new Promise((r) => {
-      const start = performance.now();
-      const tick = () => (performance.now() - start >= s * 1000 / this.settings.speed ? r() : requestAnimationFrame(tick));
-      tick();
-    });
+    return new Promise((r) => { this.timers.push({ left: s, done: r }); });
   }
 
   private textFor(line: Line): { text: string; sub?: string } {

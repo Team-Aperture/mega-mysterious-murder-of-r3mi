@@ -428,7 +428,7 @@ export class Cabin {
     return (c(r) << 16) | (c(g) << 8) | c(b);
   }
 
-  private nightAmbient(): number { return 0.55 + 0.45 * this.nightLevel; }
+  private nightAmbient(): number { return 0.42 + 0.58 * this.nightLevel; }
 
   setLavSign(occupied: boolean): void {
     this.lavOccupied = occupied;
@@ -439,13 +439,13 @@ export class Cabin {
   update(dt: number): void {
     this.time += dt;
     const t = this.time;
-    const env = mixColor(mixColor(0x2c2f52, NIGHT_ENV, this.nightLevel), 0xffffff, this.lightsOn);
+    const env = mixColor(mixColor(0x15172e, NIGHT_ENV, this.nightLevel), 0xffffff, this.lightsOn);
     for (const l of this.envLayers) l.tint = env;
     for (const s of this.sprites.values()) {
       if (s.parent === this.stage && s.zIndex >= 10 && s.zIndex <= 32) s.tint = env;
     }
     const floor = this.sprites.get('floor');
-    if (floor) floor.tint = mixColor(mixColor(0x23264a, NIGHT_FLOOR, this.nightLevel), 0xffffff, this.lightsOn * 0.8);
+    if (floor) floor.tint = mixColor(mixColor(0x111326, NIGHT_FLOOR, this.nightLevel), 0xffffff, this.lightsOn * 0.8);
     for (const sl of this.sleepers) {
       if (sl.s.parent === this.stage) sl.s.tint = env;
       // slow breathing under the blankets

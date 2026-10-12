@@ -12,7 +12,7 @@ export const rowX = (n: number): number => (n - 14) * ROW_PITCH;
 export const ROWS = [10, 11, 12, 13, 14, 15, 16, 17];
 
 export const CABIN = {
-  left: -1650,
+  left: -2000,
   right: 2140,
   ceiling: -980,
   binBottom: -704,

@@ -60,6 +60,14 @@ export class Camera {
     });
   }
 
+  /** Cancels a scripted move (it resolves where it is) and any shake. */
+  stop(): void {
+    const m = this.move;
+    this.move = null;
+    this.shakeA = 0;
+    m?.resolve();
+  }
+
   /** Frames a set of world x positions (with padding) at a vertical centre. */
   frame(xs: number[], y = -430, pad = 260, minZoom = 0.8, maxZoom = 1.5): { x: number; zoom: number } {
     const lo = Math.min(...xs) - pad, hi = Math.max(...xs) + pad;

@@ -1,4 +1,4 @@
-import { Container, Sprite, type Application } from 'pixi.js';
+import { BlurFilter, Container, Graphics, Sprite, type Application } from 'pixi.js';
 import { buildAtlas, type Atlas } from '../anim/atlas';
 import { Actor, type Facing } from '../characters/actor';
 import { CHARACTERS, atlasFor } from '../characters/registry';
@@ -15,6 +15,9 @@ import { h } from '../ui/dom';
 import { SequencePlayer, type SequenceDef } from '../story/sequence';
 import { atlasScale } from '../app/stage';
 import { defaultProgress, loadSettings, saveSettings, type Progress, type Settings } from './state';
+
+/** Largest simulation step (s). */
+const STEP = 1 / 30;
 
 export type Cast = { ich: Actor; r3mi: Actor; vtgm: Actor };
 
@@ -36,7 +39,7 @@ export interface Toss {
   s: Sprite;
   t: number;
   x0: number; y0: number; x1: number; y1: number; arc: number; dur: number; spin: number; rot0: number;
-  bounce: number; e?: EaseSpec; done?: () => void; landed?: boolean; sound?: string;
+  bounce: number; e?: EaseSpec; done?: () => void; landed?: boolean; sound?: string; shake?: number;
 }
 
 /**
@@ -62,6 +65,8 @@ export class Game {
   private hover: Hotspot | null = null;
   private nearest: Hotspot | null = null;
   readonly tosses: Toss[] = [];
+  /** Props that follow a bone (e.g. the Travel Bug in ICH's glove). */
+  readonly attached: { s: Sprite; a: Actor; bone: string; sx: number; sy: number }[] = [];
   /** Deterministic property tweens (stepped with the world, so seeking stays exact). */
   readonly tweens: { o: Record<string, number>; k: string; from: number; to: number; t: number; dur: number; e: EaseSpec; done?: () => void }[] = [];
   private labelEl!: HTMLElement;
@@ -75,6 +80,7 @@ export class Game {
   /** Hooks for the story (trip trigger etc.). */
   onTick: ((dt: number) => void) | null = null;
   paused = false;
+  private timers: { left: number; done: () => void }[] = [];
   private loadingEl: HTMLElement | null = null;
 
   constructor(readonly app: Application, ui: HTMLElement) {
@@ -165,8 +171,11 @@ export class Game {
   start(): void {
     this.app.ticker.add((tk) => {
       if (!this.running || this.paused) return;
-      const dt = Math.min(tk.deltaMS / 1000, 1 / 20);
-      this.frame(dt);
+      // fixed substeps: slow devices keep real-time pace instead of running in slow motion,
+      // and springs/ropes never see a step larger than 1/30 s (a stalled tab is capped at 0.25 s)
+      const real = Math.min(tk.deltaMS / 1000, 0.25);
+      const n = Math.max(1, Math.ceil(real / STEP - 1e-6));
+      for (let i = 0; i < n; i++) this.frame(real / n);
     });
   }
 
@@ -179,6 +188,10 @@ export class Game {
     this.step(dt);
     this.onTick?.(dt);
     this.updateHotspotUi();
+    if (this.timers.length) {
+      const due = this.timers.filter((t) => (t.left -= dt) <= 0);
+      if (due.length) { this.timers = this.timers.filter((t) => t.left > 0); for (const t of due) t.done(); }
+    }
   }
 
   /** Advances everything by dt (deterministic given the same inputs). */
@@ -192,17 +205,22 @@ export class Game {
     }
     this.stepTosses(dt);
     this.stepTweens(dt);
+    for (const at of this.attached) {
+      const p = at.a.worldPoint(at.bone, at.sx, at.sy);
+      at.s.position.set(p.x, p.y);
+    }
     this.cam.update(dt);
     this.dialogue.update(dt);
     this.stepTalkAccents(dt);
+    this.stepCards(dt);
   }
 
   /* ------------------------------------------------------------------ cutscenes */
-  cutscene(def: SequenceDef<Game>, opts: { skippable?: boolean } = {}): Promise<void> {
+  cutscene(def: SequenceDef<Game>, opts: { skippable?: boolean; setup?: boolean; letterbox?: boolean } = {}): Promise<void> {
     this.setControl(false);
-    document.body.classList.add('cinematic');
+    if (opts.letterbox !== false) document.body.classList.add('cinematic');
     this.skipEl.classList.toggle('on', opts.skippable !== false);
-    const player = new SequencePlayer<Game>(def, this as Game);
+    const player = new SequencePlayer<Game>(def, this as Game, opts.setup !== false);
     this.seq = player;
     return player.finished.then(() => {
       document.body.classList.remove('cinematic');
@@ -287,9 +305,40 @@ export class Game {
     s.scale.set(1 / this.props.scale);
     s.position.set(x, y);
     s.zIndex = z;
+    s.label = 'prop';
     this.cabin.stage.addChild(s);
     return s;
   }
+
+  /** A sprite of one part of an actor's sheet, placed so that sheet point (px, py) sits at (x, y). */
+  spawnPart(a: Actor, id: string, px: number, py: number, x: number, y: number, z = 60): Sprite {
+    const pt = a.view.atlas.parts.get(id)!;
+    const s = new Sprite(pt.texture);
+    s.label = 'prop';
+    s.anchor.set((px - pt.x) / pt.w, (py - pt.y) / pt.h);
+    s.scale.set((a.facingScale() < 0 ? -1 : 1) * a.scale / a.view.atlas.scale, a.scale / a.view.atlas.scale);
+    s.position.set(x, y);
+    s.zIndex = z;
+    this.cabin.stage.addChild(s);
+    return s;
+  }
+
+  /** An unidentified figure passing in the dark foreground. Deliberately ambiguous. */
+  shadowFigure(): Graphics {
+    const g = new Graphics();
+    g.filters = [new BlurFilter({ strength: 10, quality: 2 })];
+    // head, a tall body, one arm carrying something small and boxy
+    g.ellipse(0, -620, 70, 82).fill({ color: 0x05050b });
+    g.roundRect(-70, -560, 140, 460, 50).fill({ color: 0x05050b });
+    g.roundRect(54, -470, 34, 240, 16).fill({ color: 0x05050b });
+    g.roundRect(60, -250, 60, 44, 8).fill({ color: 0x05050b });
+    g.alpha = 0.92;
+    this.cabin.fg.addChild(g);
+    return g;
+  }
+
+  attach(s: Sprite, a: Actor, bone: string, sx: number, sy: number): void { this.attached.push({ s, a, bone, sx, sy }); }
+  detach(s: Sprite): void { const i = this.attached.findIndex((x) => x.s === s); if (i >= 0) this.attached.splice(i, 1); }
 
   toss(t: Omit<Toss, 't' | 'rot0'>): Toss {
     const o: Toss = { ...t, t: 0, rot0: t.s.rotation };
@@ -310,6 +359,7 @@ export class Game {
       if (k >= 1 && !o.landed) {
         o.landed = true;
         if (o.sound) this.audio.sfx(o.sound);
+        if (o.shake && !this.settings.reducedMotion) this.cam.shake(o.shake);
         if (o.bounce > 0) {
           // a small hop, then rest
           const b = o.bounce;
@@ -353,6 +403,7 @@ export class Game {
       const sx = this.cam.toScreen(a.x, 0).x / Math.max(1, this.cam.viewW) * 2 - 1;
       this.audio.sfx(`step.${a.id === 'ich' ? 'ich' : a.id}`, { pan: clamp(sx, -0.8, 0.8), gain: a.id === 'r3mi' ? 0.8 : 0.7 });
     } else if (e.name === 'sfx') this.audio.sfx(String(e.data));
+    else if (e.name === 'impact' && !this.settings.reducedMotion) this.cam.shake(5);
   }
 
   /* ------------------------------------------------------------------ player control */
@@ -362,6 +413,10 @@ export class Game {
     document.body.classList.toggle('playing', on);
   }
   get control(): boolean { return this.controlOn; }
+  get touch(): boolean { return matchMedia('(pointer: coarse)').matches; }
+
+  /** Current hotspots (read-only; used by tests and the Lab). */
+  get hotspotList(): readonly Hotspot[] { return this.hotspots; }
 
   setHotspots(list: Hotspot[]): void {
     this.hotspots = list;
@@ -382,7 +437,7 @@ export class Game {
     (this.hintEl as unknown as { _t: number })._t = window.setTimeout(() => this.hintEl.classList.remove('show'), ms);
   }
 
-  private walkBounds(): [number, number] { return [CABIN.left + 160, CABIN.lavDoor - 40]; }
+  private walkBounds(): [number, number] { return [CABIN.bulkhead + 40, CABIN.lavDoor - 40]; }
 
   private hitHotspot(px: number, py: number): Hotspot | null {
     const w = this.cam.toWorld(px, py);
@@ -462,6 +517,8 @@ export class Game {
     this.labelEl.classList.remove('show');
     const ich = this.cast.ich;
     await ich.walkTo(hs.standX);
+    // something interrupted the walk (R-3MI's legs, mostly): the cutscene hands control back itself
+    if (this.inCutscene) return;
     if (hs.face) ich.face(hs.face);
     try {
       await hs.use();
@@ -490,13 +547,9 @@ export class Game {
   }
 
   /* ------------------------------------------------------------------ helpers for scripts */
+  /** Waits on the game clock (stops while paused, keeps pace with the game loop). */
   wait(s: number): Promise<void> {
-    return new Promise((resolve) => {
-      let left = s;
-      const tick = (dt: number) => { left -= dt; if (left <= 0) { this.app.ticker.remove(fn); resolve(); } };
-      const fn = (tk: { deltaMS: number }) => { if (!this.paused) tick(Math.min(tk.deltaMS / 1000, 1 / 20)); };
-      this.app.ticker.add(fn);
-    });
+    return new Promise((resolve) => { this.timers.push({ left: s, done: resolve }); });
   }
 
   until(cond: () => boolean): Promise<void> {
@@ -506,12 +559,26 @@ export class Game {
     });
   }
 
+  /** Title card on the game clock (so replays and skips show exactly the same thing). */
   card(t1: string, t2 = '', o: { black?: boolean; comic?: boolean; ms?: number } = {}): Promise<void> {
     const el = h('div', { class: `card${o.black ? ' black' : ''}${o.comic ? ' comic' : ''}` }, h('div', { class: 'inner' }, h('div', { class: 't1', text: t1 }), h('div', { class: 't2', text: t2 })));
     this.ui.append(el);
-    requestAnimationFrame(() => el.classList.add('show'));
-    return new Promise((r) => window.setTimeout(() => { el.classList.remove('show'); window.setTimeout(() => { el.remove(); r(); }, 600); }, o.ms ?? 2200));
+    el.classList.add('show');
+    const hold = (o.ms ?? 2200) / 1000;
+    return new Promise((r) => {
+      this.cards.push({ el, t: 0, hold, done: r });
+    });
   }
+  private readonly cards: { el: HTMLElement; t: number; hold: number; done: () => void }[] = [];
+  private stepCards(dt: number): void {
+    for (let i = this.cards.length - 1; i >= 0; i--) {
+      const c = this.cards[i];
+      c.t += dt;
+      if (c.t >= c.hold) c.el.classList.remove('show');
+      if (c.t >= c.hold + 0.6) { c.el.remove(); this.cards.splice(i, 1); c.done(); }
+    }
+  }
+  clearCards(): void { for (const c of this.cards.splice(0)) { c.el.remove(); c.done(); } }
 
   /** Standing in the aisle (z in front of seats) vs sitting in a row (between backrest and armrest). */
   placeInAisle(a: Actor, x: number): void { a.x = x; a.y = 0; a.root.zIndex = 50; }

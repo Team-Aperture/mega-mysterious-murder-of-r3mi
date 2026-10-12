@@ -22,14 +22,18 @@ export function resetWorld(g: Game): void {
   for (const n of [13, 14, 15]) c.setRecline(n, 0);
   c.sprites.get('lav.door')!.scale.x = 1 / g.props.scale;
   for (const t of g.tosses.splice(0)) t.s.destroy();
+  g.attached.length = 0;
   for (const s of [...g.cabin.stage.children]) if ((s as { label?: string }).label === 'prop') s.destroy();
   g.dialogue.close();
+  g.clearCards();
   const { ich, r3mi, vtgm } = g.cast;
   for (const a of [ich, r3mi, vtgm]) { a.reset(); a.root.visible = true; a.scale = a.spec.scale ?? 1; }
   g.placeInAisle(ich, MARK.meetIch); ich.face(-1, true);
   g.placeInAisle(r3mi, MARK.meetR3mi); r3mi.face(-1, true);
   g.placeInAisle(vtgm, MARK.meetVtgm); vtgm.face(1, true);
   g.cam.follow = null;
+  g.cam.stop();
+  g.cam.tx = g.cam.x; g.cam.ty = -430; g.cam.tz = 1;
 }
 
 /* ====================================================================== opening */
@@ -95,7 +99,12 @@ export const ENTRANCE: S = {
       void ich.walkTo(CABIN.lavDoor - 40);
     }, 'ICH tritt heraus'),
     at(9.9, (g) => { g.audio.sfx('door'); g.audio.sfx('klonk', { gain: 0.5 }); void g.cast.ich.play('yanked', { fade: 0.05 }); g.cast.ich.setExpression('shocked'); }, 'Tür schnappt zu: Mantel eingeklemmt'),
-    at(12.2, (g) => { g.cast.ich.setExpression('neutral'); void g.cast.ich.play('hatAdjust', { fade: 0.2 }); }),
+    at(12.2, (g) => {
+      const ich = g.cast.ich;
+      ich.x += ich.facing * 40; // the yank clip ends 40 units further on: take it over into the root
+      ich.setExpression('neutral');
+      void ich.play('hatAdjust', { fade: 0 });
+    }),
     at(12.8, (g) => g.line('ich', 'Beabsichtigt.', { auto: 1.0 })),
     at(14.6, (g) => g.cast.ich.idle(0.3)),
   ],
@@ -199,4 +208,185 @@ export const SEAT_STRUGGLE: S = {
     at(72.4, (g) => { void g.cast.vtgm.play('toCamera', { layer: 'face' }); g.line('vtgm', 'What is?', { sub: 'Was?', auto: 0.6 }); }),
     at(74.0, (g) => g.cast.ich.idle(0.4)),
   ],
+};
+
+/* ====================================================================== „NOCH nicht." */
+export const NOCH_NICHT: S = {
+  id: 'noch', title: '„NOCH nicht."', duration: 13,
+  setup(g) { resetWorld(g); seatedState(g); void g.cam.moveTo(-60, -440, 1.08, 0); },
+  events: [
+    at(0, (g) => { void g.cast.ich.play('beat', { layer: 'accent', additive: true }); g.line('ich', 'Alles. Ein Detektiv findet alles interessant.', { auto: 0.8 }); }),
+    at(3.6, (g) => { void g.cast.ich.play('aha', { fade: 0.15 }); g.line('ich', 'ICH werde jetzt ermitteln.', { mood: 'proud', auto: 0.8 }); }),
+    at(6.2, (g) => { g.cast.ich.idle(0.4); void g.cast.vtgm.play('toCamera', { layer: 'face' }); g.line('vtgm', 'There is no crime.', { sub: 'Es gibt kein Verbrechen.', auto: 0.7 }); }),
+    at(8.4, (g) => { void g.cam.moveTo(g.cast.ich.x - 60, -520, 1.55, 1.1, 'expoOut'); void g.cast.ich.play('pose', { fade: 0.1 }); g.cast.ich.setExpression('proud'); }, 'Kamerafahrt auf ICH'),
+    at(9.0, (g) => { g.audio.sfx('sting'); g.line('ich', '*NOCH* nicht.', { auto: 1.0 }); }, '„NOCH nicht."'),
+    at(11.0, (g) => { void g.cast.vtgm.play('eyeRoll', { layer: 'face' }); g.cast.vtgm.setExpression('exasperated'); }, 'Augenrollen'),
+    at(11.4, (g) => void g.cam.moveTo(-60, -440, 1.08, 1.5, 'sineInOut')),
+    at(12.6, (g) => { g.cast.ich.idle(0.4); g.cast.ich.setExpression('neutral'); g.cast.vtgm.setExpression('deadpan'); }),
+  ],
+};
+
+/* ====================================================================== the overhead bin */
+export const BIN_X = rowX(15) - 112;
+export const AVALANCHE: S = {
+  id: 'avalanche', title: 'Das Gepäckfach (Lawine)', duration: 24,
+  setup(g) {
+    resetWorld(g); seatedState(g);
+    g.placeInAisle(g.cast.ich, BIN_X); g.cast.ich.face(-1, true);
+    void g.cam.moveTo(BIN_X, -420, 1.1, 0);
+  },
+  events: [
+    at(0, (g) => { const ich = g.cast.ich; void g.cam.moveTo(ich.x, -420, 1.1, 1.0); g.line('ich', 'Das Gepäckfach. Verschlossen.', { auto: 0.6 }); }),
+    at(2.2, (g) => { void g.cast.ich.play('reachUp', { fade: 0.2 }); g.line('ich', 'Was verbirgt es?', { auto: 0.5 }); }),
+    at(3.3, (g) => { g.audio.sfx('latch'); g.audio.sfx('creak'); void g.tween({ get k() { return 0; }, set k(v: number) { g.cabin.setBinOpen(v); } } as unknown as { k: number }, { k: 1 }, 0.4, 'backOut'); g.cabin.lightsOn = 0; }, 'Klappe auf'),
+    at(4.0, (g) => { void g.cast.ich.play('stand', { fade: 0.5 }); }, 'Nichts passiert'),
+    at(5.6, (g) => {
+      // a single pillow, onto the hat
+      const ich = g.cast.ich;
+      const p = g.spawnProp('pillow', ich.x + 20, -740, 61);
+      g.toss({ s: p, x0: ich.x + 20, y0: -740, x1: ich.x + 6, y1: -686, arc: 10, dur: 0.35, spin: 0.25, bounce: 6, sound: 'pop' });
+      (g as unknown as { _pillow: unknown })._pillow = p;
+    }, 'Ein Kissen'),
+    at(6.6, (g) => g.line('ich', '… Ein Kissen.', { style: 'whisper', auto: 0.7 })),
+    at(8.6, (g) => { void g.cast.ich.play('buried', { fade: 0.08 }); g.cast.ich.setExpression('nervous'); }, 'Lawine'),
+    ...([
+      ['suitcase', -60, -730, -20, -112, 0.5, 'thud'],
+      ['duffel', 70, -720, 60, -150, -0.4, 'thud'],
+      ['backpack', 0, -720, -40, -232, 0.8, 'thud'],
+      ['duck', 10, -740, 16, -300, 2.6, 'squeak'],
+      ['travelbug', 14, -740, 22, -334, 4.2, 'clink'],
+    ] as const).map(([id, sx, sy, ex, ey, spin, snd], i) => at<Game>(8.7 + i * (i < 3 ? 0.26 : 0.7), (g) => {
+      const ich = g.cast.ich;
+      const sp = g.spawnProp(id, ich.x + sx, sy, 61 + i);
+      g.toss({ s: sp, x0: ich.x + sx, y0: sy, x1: ich.x + ex, y1: ey, arc: 20, dur: 0.42 + i * 0.03, spin, bounce: i < 3 ? 14 : 6, sound: snd, shake: i < 3 ? 3 : 0 });
+      (g as unknown as Record<string, unknown>)[`_lug${i}`] = sp;
+    })),
+    at(9.0, (g) => {
+      const p = (g as unknown as { _pillow: import('pixi.js').Sprite })._pillow;
+      g.toss({ s: p, x0: p.x, y0: p.y, x1: p.x + 140, y1: -40, arc: 60, dur: 0.6, spin: 2, bounce: 8 });
+    }),
+    at(11.6, (g) => g.line('ich', 'Interessant.', { style: 'whisper', auto: 0.8 })),
+    at(13.4, (g) => { void g.cast.vtgm.play('toCamera', { layer: 'face' }); g.line('vtgm', 'Smooth.', { sub: 'Elegant.', auto: 0.7 }); }),
+    at(15.2, (g) => {
+      const ich = g.cast.ich;
+      ich.setExpression('proud');
+      void ich.play('popOut', { fade: 0.05 });
+      g.audio.sfx('whoosh');
+      const L = g as unknown as Record<string, import('pixi.js').Sprite>;
+      const out: [string, number, number][] = [['_lug0', -170, -30], ['_lug1', 200, -40], ['_lug2', -280, -30], ['_lug3', 110, -20]];
+      out.forEach(([k, dx, y], i) => { const sp = L[k]; sp.zIndex = 45; g.toss({ s: sp, x0: sp.x, y0: sp.y, x1: ich.x + dx, y1: y, arc: 90 + i * 20, dur: 0.55, spin: dx > 0 ? 1.5 : -1.5, bounce: 10, sound: 'thud' }); });
+      const tb = L._lug4;
+      g.tween(tb, { x: ich.x, y: -560 }, 0.25, 'quadOut').then(() => g.attach(tb, ich, 'hand.near', 64, -214));
+    }, 'Er taucht auf, mit Fund'),
+    at(16.6, (g) => g.line('ich', 'Ein Travel Bug. Er reist um die Welt, von Hand zu Hand.', { auto: 0.8 })),
+    at(20.0, (g) => g.line('ich', 'Genau wie wir.', { auto: 0.6 })),
+    at(21.6, (g) => g.line('ich', 'Zufall? … Ja.', { auto: 0.9 })),
+    at(23.6, (g) => {
+      const ich = g.cast.ich;
+      const tb = (g as unknown as Record<string, import('pixi.js').Sprite>)._lug4;
+      g.detach(tb); tb.destroy();
+      ich.idle(0.3); ich.setExpression('neutral');
+      (g as unknown as { _pillow: unknown })._pillow = null;
+    }),
+  ],
+};
+
+/* ====================================================================== the trip */
+export const TRIP: S = {
+  id: 'trip', title: 'Gestolpert über R-3MIs Beine', duration: 10.4,
+  setup(g) {
+    resetWorld(g); seatedState(g);
+    g.placeInAisle(g.cast.ich, -150); g.cast.ich.face(-1, true);
+    void g.cam.moveTo(-420, -420, 1.0, 0);
+  },
+  events: [
+    at(0, (g) => {
+      const ich = g.cast.ich;
+      ich.stopWalking();
+      void ich.play('trip', { fade: 0.05 });
+      ich.setExpression('shocked');
+      void g.cam.moveTo(ich.x + ich.facing * 380, -330, 1.05, 1.6, 'sineInOut');
+    }, 'Fuß bleibt hängen'),
+    at(0.58, (g) => {
+      const ich = g.cast.ich;
+      const hp = ich.worldPoint('hat');
+      const hat = g.spawnPart(ich, 'hat', 62, -628, hp.x, hp.y, 52);
+      (g as unknown as { _hat: unknown })._hat = hat;
+      g.toss({ s: hat, x0: hp.x, y0: hp.y, x1: ich.x + ich.facing * 470, y1: -66, arc: 260, dur: 1.5, spin: ich.facing * 9.5, bounce: 10, sound: 'pop' });
+    }, 'Der Hut fliegt'),
+    at(3.4, (g) => { void g.cast.vtgm.play('toCamera', { layer: 'face' }); g.cast.vtgm.setExpression('deadpan'); }),
+    at(4.3, (g) => {
+      const ich = g.cast.ich;
+      const hat = (g as unknown as { _hat: import('pixi.js').Sprite })._hat;
+      const end = ich.x + ich.facing * 300;
+      g.tween(hat, { x: end + ich.facing * 48, y: -628 - 12, rotation: 0 }, 0.6, 'sineInOut').then(() => hat.destroy());
+    }, 'Hut zurück'),
+    at(5.6, (g) => {
+      const ich = g.cast.ich;
+      ich.x += ich.facing * 300; // TRIP_ADVANCE: take the clip's travel over into the root
+      void ich.play('brushOff', { fade: 0 });
+      ich.setExpression('embarrassed');
+    }),
+    at(7.0, (g) => { void g.cast.ich.play('hatAdjust', { fade: 0.15 }); g.cast.ich.setExpression('neutral'); }),
+    at(7.4, (g) => g.line('ich', 'Beabsichtigt.', { auto: 0.9 })),
+    at(8.9, (g) => g.line('vtgm', 'Of course.', { sub: 'Natürlich.', auto: 0.6 })),
+    at(10.2, (g) => g.cast.ich.idle(0.3)),
+  ],
+};
+
+/* ====================================================================== the ending (teaser) */
+export const ENDING: S = {
+  id: 'ending', title: 'Ende: „R-3MI wurde ermordet!"', duration: 43,
+  setup(g) { resetWorld(g); seatedState(g); g.placeInAisle(g.cast.ich, 360); g.cast.ich.face(-1, true); void g.cam.moveTo(80, -440, 1.05, 0); },
+  events: [
+    at(0, (g) => { g.audio.sfx('chime'); g.audio.music(null); void g.cam.moveTo(80, -440, 1.05, 1.2); }),
+    at(0.8, (g) => void g.dialogue.pa({ who: 'pa', text: 'Meine Damen und Herren, wir dimmen nun das Kabinenlicht. Wir wünschen Ihnen eine angenehme Nachtruhe. Bitte bleiben Sie angeschnallt.', auto: 0.6 })),
+    at(7.0, (g) => { const ich = g.cast.ich; void ich.walkTo(SEATS.ich.x + 10); }, 'ICH geht zu 15C'),
+    at(8.6, (g) => {
+      const ich = g.cast.ich;
+      ich.face(-1); ich.root.zIndex = 25;
+      void g.tween(ich, { x: SEATS.ich.x, y: SEATS.ich.y }, 0.4);
+      void ich.play('sitDown', { fade: 0.1 }).then(() => void ich.play('sit', { fade: 0.2 }));
+    }),
+    at(10.0, (g) => g.line('ich', 'Ein Detektiv schläft nie.', { mood: 'proud', auto: 0.8 })),
+    at(12.6, (g) => { const ich = g.cast.ich; ich.setExpression('neutral'); void ich.play('doze', { fade: 0.2 }).then(() => void ich.play('dozing', { fade: 0.3 })); }, 'Hut über die Platte'),
+    at(13.2, (g) => { void g.tween(g.cabin, { nightLevel: 0.22 }, 3.2, 'sineInOut'); g.audio.ambience(true, 0.6); }, 'Licht aus'),
+    at(16.4, (g) => void g.card('SPÄTER.', '', { ms: 2000 }), 'SPÄTER.'),
+    at(17.0, (g) => void g.cam.moveTo(-160, -460, 1.3, 3.5, 'sineInOut')),
+    at(21.0, (g) => {
+      // a shadow passes in the foreground. Whose? (Not answered in Chapter 0.)
+      const sh = g.shadowFigure();
+      sh.position.set(-200 * 1.3 + 900, 180);
+      void g.tween(sh, { x: -200 * 1.3 - 1000 }, 3.4, 'linear').then(() => sh.destroy());
+    }, 'Ein Schatten'),
+    ...[0, 1, 2, 3, 4, 5].map((i) => at<Game>(21.4 + i * 0.48, (g) => g.audio.sfx('step.vtgm', { gain: 0.25 }))),
+    at(24.2, (g) => g.audio.sfx('click', { gain: 1.2 }), 'Klick'),
+    at(24.8, (g) => void g.cast.r3mi.play('deepSleep', { fade: 0.6 }), 'Das Standby-Licht erlischt'),
+    at(28.4, (g) => { g.audio.sfx('scream'); g.line('voice', 'AAAAAAAAH!', { auto: 0.4 }); }, 'Schrei'),
+    at(29.4, (g) => {
+      g.cabin.lightsOn = 1; g.cabin.nightLevel = 1;
+      g.audio.sfx('lightson');
+      const { ich, vtgm } = g.cast;
+      ich.root.zIndex = 50;
+      void g.tween(ich, { y: 0, x: SEATS.ich.x + 60 }, 0.3, 'quadOut');
+      void ich.play('shocked', { fade: 0.05 }); ich.setExpression('shocked');
+      void vtgm.play('startle', { fade: 0.05 }); vtgm.setExpression('alarmed');
+      void vtgm.play('lookBack', { layer: 'face' });
+    }, 'Licht an!'),
+    at(30.6, (g) => g.line('voice', 'ER IST TOT! R-3MI WURDE *ERMORDET*!', { auto: 1.2 })),
+    at(33.6, (g) => {
+      const r = g.cast.r3mi;
+      const e = r.worldPoint('head', 56, -800);
+      g.audio.sfx('sting');
+      void g.cam.moveTo(e.x, e.y + 60, 2.6, 1.4, 'expoOut');
+      g.cast.vtgm.idle(0.5);
+    }, 'Auf das dunkle Auge'),
+    at(37.4, (g) => { const ich = g.cast.ich; void g.cam.moveTo(ich.x - 40, -560, 1.7, 1.2, 'sineInOut'); ich.idle(0.3); ich.setExpression('proud'); }),
+    at(38.8, (g) => g.line('ich', '… Ein Fall.', { auto: 1.2 }), '„… Ein Fall."'),
+    at(41.4, (g) => { g.audio.music('detective'); void g.card('FORTSETZUNG FOLGT', 'Kapitel 1: Tatort Reihe 14', { comic: true, ms: 3200 }); }),
+  ],
+  tick(g, t) {
+    // R-3MI never reacts to any of it
+    if (t > 29) g.cast.r3mi.setExpression('off');
+  },
 };

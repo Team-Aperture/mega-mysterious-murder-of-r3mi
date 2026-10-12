@@ -134,4 +134,77 @@ const nod: ClipDef = {
   },
 };
 
-export const ICH_CLIPS: ClipDef[] = [idle, stand, pose, aha, chinStroke, nervous, shocked, hatTip, examine, beat, nod];
+/**
+ * Coat caught in the lavatory door: a step forward, then the coat yanks him back — torso snaps
+ * back, arms windmill, the hat jumps — a tug, he comes free and stumbles forward.
+ */
+const yanked: ClipDef = blocked('yanked', 2.3, [
+  [0, { 'root.x': 0, 'torso.r': -3, 'head.r': 0, 'upperarm.near.r': 0, 'upperarm.far.r': 0, 'forearm.near.r': -8, 'forearm.far.r': -6, 'coat.back.r': 0, 'hat.y': 0, 'hat.r': 0, 'pelvis.y': 0, 'foot.near.x': 0, 'foot.far.x': 0 }, 'expoOut'],
+  [0.08, { 'root.x': -26, 'torso.r': -26, 'head.r': -18, 'upperarm.near.r': -120, 'upperarm.far.r': 110, 'forearm.near.r': -40, 'forearm.far.r': 40, 'coat.back.r': -38, 'hat.y': -46, 'hat.r': -25, 'pelvis.y': -10, 'foot.near.x': 24, 'foot.far.x': 10 }, 'sineInOut'],
+  [0.32, { 'root.x': -34, 'upperarm.near.r': -60, 'upperarm.far.r': 160, 'forearm.near.r': -90, 'forearm.far.r': 30, 'hat.y': -64, 'hat.r': -45 }, 'sineInOut'],
+  [0.56, { 'upperarm.near.r': -150, 'upperarm.far.r': 70, 'forearm.near.r': -20, 'forearm.far.r': 90, 'hat.y': 0, 'hat.r': 8 }, 'bounceOut'],
+  [0.9, { 'torso.r': -18, 'upperarm.near.r': -40, 'upperarm.far.r': 30, 'forearm.near.r': -70, 'forearm.far.r': -50, 'hat.r': 0 }, 'quadIn'],
+  // the tug: leans forward, pulls
+  [1.25, { 'root.x': -20, 'torso.r': 22, 'head.r': 10, 'pelvis.y': 18, 'upperarm.near.r': -20, 'upperarm.far.r': 10, 'coat.back.r': -30, 'foot.near.x': 40, 'foot.far.x': -10 }, 'expoOut'],
+  [1.4, { 'root.x': 34, 'torso.r': 30, 'head.r': 14, 'pelvis.y': 12, 'coat.back.r': 20, 'upperarm.near.r': -70, 'upperarm.far.r': 60 }, 'sineInOut'],
+  [1.75, { 'root.x': 40, 'torso.r': 6, 'head.r': 0, 'pelvis.y': 0, 'coat.back.r': -6, 'upperarm.near.r': -10, 'upperarm.far.r': 10, 'forearm.near.r': -10, 'forearm.far.r': -6, 'foot.near.x': 0, 'foot.far.x': 0 }, 'sineInOut'],
+  [2.3, { 'root.x': 40, 'torso.r': -3, 'coat.back.r': 0, 'upperarm.near.r': 0, 'upperarm.far.r': 0, 'forearm.near.r': -8, 'forearm.far.r': -6 }],
+], {
+  attach: { 'hand.near': [{ t: 0.05, v: 'hand.near#open' }, { t: 1.7, v: 'hand.near' }], 'hand.far': [{ t: 0.05, v: 'hand.far#open' }, { t: 1.7, v: 'hand.far' }] },
+  events: [{ t: 0.08, name: 'sfx', data: 'whoosh' }, { t: 1.38, name: 'sfx', data: 'swish' }],
+  tracks: { '@flicker': [{ t: 0, v: 0.9 }, { t: 1.0, v: 0.3 }, { t: 1.8, v: 0 }] },
+});
+
+/** Straightens the hat with both hands, chin (plate) up. Dignity restored. */
+const hatAdjust: ClipDef = blocked('hatAdjust', 1.3, [
+  [0, { 'upperarm.near.r': 0, 'forearm.near.r': -8, 'hand.near.r': 0, 'hat.r': 0, 'head.r': 0, 'torso.r': -3 }, 'sineInOut'],
+  [0.35, { 'upperarm.near.r': -168, 'forearm.near.r': -12, 'hand.near.r': -10, 'hat.r': -10, 'head.r': -4 }, 'sineInOut'],
+  [0.6, { 'hat.r': 6, 'hand.near.r': 6 }, 'sineInOut'],
+  [0.8, { 'hat.r': 0, 'hand.near.r': 0, 'head.r': -8, 'torso.r': -7 }, 'sineInOut'],
+  [1.3, { 'upperarm.near.r': -27, 'forearm.near.r': 146, 'hand.near.r': -20, 'head.r': -3, 'torso.r': -5 }],
+], { z: { 'hand.near': [{ t: 0, v: 36 }], 'forearm.near': [{ t: 0, v: 35.5 }] }, attach: { 'hand.near': [{ t: 1.0, v: 'hand.near#fist' }] } });
+
+/** „ICH.": both index fingers point at his own plate. */
+const pointSelf: ClipDef = blocked('pointSelf', 1.4, [
+  [0, { 'upperarm.near.r': 0, 'forearm.near.r': -8, 'hand.near.r': 0, 'upperarm.far.r': 0, 'forearm.far.r': -6, 'torso.r': -3, 'head.r': 0 }, 'backIn'],
+  [0.22, { 'upperarm.near.r': -112, 'forearm.near.r': -108, 'hand.near.r': -40, 'upperarm.far.r': -104, 'forearm.far.r': -112, 'hand.far.r': -36, 'torso.r': -8, 'head.r': -6 }, 'backOut'],
+  [1.4, { 'upperarm.near.r': -110, 'forearm.near.r': -110, 'hand.near.r': -38, 'upperarm.far.r': -102, 'forearm.far.r': -114, 'hand.far.r': -34, 'torso.r': -7, 'head.r': -5 }],
+], { attach: { 'hand.near': [{ t: 0.1, v: 'hand.near#point' }], 'hand.far': [{ t: 0.1, v: 'hand.far#point' }] }, z: { 'hand.near': [{ t: 0, v: 36 }], 'forearm.near': [{ t: 0, v: 35.5 }] } });
+
+/* ------------------------------------------------------------------ seated (15C), FK legs */
+const SIT: Record<string, number> = {
+  '@ik': 0, 'pelvis.x': -10, 'pelvis.y': 106, 'torso.r': -2, 'thigh.near.r': -86, 'shin.near.r': 85, 'foot.near.r': 1, 'thigh.far.r': -84, 'shin.far.r': 83, 'foot.far.r': 1,
+  'upperarm.near.r': -24, 'forearm.near.r': -56, 'hand.near.r': -10, 'upperarm.far.r': -20, 'forearm.far.r': -58, 'coat.front.r': -50, 'coat.back.r': 30,
+};
+const sitDown: ClipDef = blocked('sitDown', 1.1, [
+  [0, { '@ik': 0, 'pelvis.x': 0, 'pelvis.y': 0, 'torso.r': -3, 'thigh.near.r': 0, 'shin.near.r': 0, 'thigh.far.r': 0, 'shin.far.r': 0, 'coat.front.r': 0, 'coat.back.r': 0, 'upperarm.near.r': 0, 'forearm.near.r': -8 }, 'sineInOut'],
+  [0.45, { 'pelvis.y': 60, 'torso.r': 20, 'thigh.near.r': -40, 'shin.near.r': 50, 'thigh.far.r': -38, 'shin.far.r': 48, 'coat.front.r': -20 }, 'quadIn'],
+  [0.8, { ...SIT, 'torso.r': 4 }, 'backOut'],
+  [1.1, SIT],
+]);
+const sit: ClipDef = {
+  name: 'sit', duration: 3, loop: true,
+  tracks: { ...Object.fromEntries(Object.entries(SIT).map(([k, v]) => [k, [{ t: 0, v }]])), 'torso.sy': [{ t: 0, v: 1, e: 'sineInOut' }, { t: 1.5, v: 1.01, e: 'sineInOut' }] },
+};
+/** „Ein Detektiv schläft nie." — and then he does: hat slides over a corner of the plate. */
+const doze: ClipDef = blocked('doze', 3.2, [
+  [0, { ...SIT, 'hat.y': 0, 'hat.x': 0, 'hat.r': 0, 'head.r': 0 }, 'sineInOut'],
+  [0.6, { 'upperarm.near.r': -168, 'forearm.near.r': -14, 'hand.near.r': -12 }, 'sineInOut'],
+  [1.1, { 'hat.y': 30, 'hat.x': -18, 'hat.r': 16, 'hand.near.r': 4 }, 'sineInOut'],
+  [1.7, { 'upperarm.near.r': -24, 'forearm.near.r': -56, 'hand.near.r': -10, 'head.r': 6 }, 'sineInOut'],
+  [2.6, { 'head.r': 14, 'torso.r': 4 }, 'sineInOut'],
+  [3.2, { ...SIT, 'hat.y': 30, 'hat.x': -18, 'hat.r': 16, 'head.r': 14, 'torso.r': 4 }],
+], {
+  z: { 'hand.near': [{ t: 0, v: 36 }], 'forearm.near': [{ t: 0, v: 35.5 }] },
+  tracks: { '@letters': [{ t: 0, v: 1 }, { t: 2.0, v: 1 }, { t: 3.2, v: 0.25 }] },
+});
+const dozing: ClipDef = {
+  name: 'dozing', duration: 3.6, loop: true,
+  tracks: {
+    ...Object.fromEntries(Object.entries({ ...SIT, 'hat.y': 30, 'hat.x': -18, 'hat.r': 16, 'torso.r': 4 }).map(([k, v]) => [k, [{ t: 0, v }]])),
+    'head.r': [{ t: 0, v: 13, e: 'sineInOut' }, { t: 1.8, v: 16, e: 'sineInOut' }],
+    '@letters': [{ t: 0, v: 0.2, e: 'sineInOut' }, { t: 1.8, v: 0.32, e: 'sineInOut' }],
+  },
+};
+
+export const ICH_CLIPS: ClipDef[] = [idle, stand, pose, aha, chinStroke, nervous, shocked, hatTip, examine, beat, nod, yanked, hatAdjust, pointSelf, sitDown, sit, doze, dozing];

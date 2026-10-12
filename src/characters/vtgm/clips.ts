@@ -94,4 +94,56 @@ const startle: ClipDef = blocked('startle', 1.0, [
   [1.0, { 'body.sy': 1, 'body.sx': 1, 'pelvis.y': 0, 'upperarm.near.r': 0, 'upperarm.far.r': 0, 'forearm.near.r': 0, 'forearm.far.r': 0 }],
 ], { attach: { 'hand.near': [{ t: 0.05, v: 'hand.near#open' }, { t: 0.8, v: 'hand.near' }], 'hand.far': [{ t: 0.05, v: 'hand.far#open' }, { t: 0.8, v: 'hand.far' }] } });
 
-export const VTGM_CLIPS: ClipDef[] = [idle, armsBehind, eyeRoll, sigh, facepalm, point, hop, nod, startle];
+/* ------------------------------------------------------------------ seated in 13C
+ * Root stands on the cushion. She sits with her legs sticking straight out and swinging:
+ * her feet do not reach the floor, which is the whole point.
+ */
+const SEATED: Record<string, number> = {
+  '@ik': 0, 'pelvis.y': 134, 'thigh.near.r': -84, 'shin.near.r': 76, 'foot.near.r': 8, 'thigh.far.r': -82, 'shin.far.r': 74, 'foot.far.r': 8,
+  'upperarm.near.r': -36, 'forearm.near.r': -48, 'hand.near.r': -10, 'upperarm.far.r': -20, 'forearm.far.r': -30,
+};
+const sitDangle: ClipDef = {
+  name: 'sitDangle', duration: 2.4, loop: true,
+  tracks: {
+    ...Object.fromEntries(Object.entries(SEATED).map(([k, v]) => [k, [{ t: 0, v }]])),
+    'shin.near.r': [{ t: 0, v: 64, e: 'sineInOut' }, { t: 1.2, v: 88, e: 'sineInOut' }],
+    'shin.far.r': [{ t: 0, v: 86, e: 'sineInOut' }, { t: 1.2, v: 62, e: 'sineInOut' }],
+    'body.sy': [{ t: 0, v: 1, e: 'sineInOut' }, { t: 1.2, v: 1.008, e: 'sineInOut' }],
+  },
+};
+/** Sits down onto the cushion (from standing on it). */
+const sitDown: ClipDef = blocked('sitDown', 0.6, [
+  [0, { '@ik': 0, 'pelvis.y': 0, 'thigh.near.r': 0, 'shin.near.r': 0, 'thigh.far.r': 0, 'shin.far.r': 0, 'body.sy': 1, 'body.sx': 1 }, 'quadIn'],
+  [0.3, { ...SEATED, 'body.sy': 0.9, 'body.sx': 1.06 }, 'backOut'],
+  [0.6, { ...SEATED, 'body.sy': 1, 'body.sx': 1 }],
+]);
+/** Standing on her seat facing backwards, peeking over the headrest (hand on top of it). */
+const peek: ClipDef = blocked('peek', 0.7, [
+  [0, { '@ik': 1, 'pelvis.y': 10, 'body.sy': 0.94, 'upperarm.near.r': 0, 'forearm.near.r': 0 }, 'backOut'],
+  [0.35, { 'pelvis.y': -16, 'body.sy': 1.04, 'upperarm.near.r': -128, 'forearm.near.r': -36, 'hand.near.r': -30 }, 'sineInOut'],
+  [0.7, { 'pelvis.y': -14, 'body.sy': 1.02, 'upperarm.near.r': -126, 'forearm.near.r': -38, 'hand.near.r': -28 }],
+], { tracks: { '@eye.pitch': [{ t: 0, v: 0 }, { t: 0.35, v: -0.12 }] } });
+/** Reaches back for the recline button on the armrest, presses it. */
+const reclineReach: ClipDef = blocked('reclineReach', 1.3, [
+  [0, SEATED, 'sineInOut'],
+  [0.45, { ...SEATED, 'upperarm.near.r': 84, 'forearm.near.r': -6, 'hand.near.r': 6, 'body.r': -6 }, 'quadIn'],
+  [0.55, { 'upperarm.near.r': 92, 'hand.near.r': 18 }, 'quadOut'],
+  [0.75, { 'upperarm.near.r': 84, 'hand.near.r': 6 }, 'sineInOut'],
+  [1.3, { ...SEATED }],
+], { events: [{ t: 0.55, name: 'sfx', data: 'click' }], z: { 'forearm.near': [{ t: 0, v: 30 }], 'hand.near': [{ t: 0, v: 31 }] } });
+/** Deadpan to the audience: the eye turns to the camera and holds. */
+const toCamera: ClipDef = {
+  name: 'toCamera', duration: 3.4,
+  tracks: { '@eye.yaw': [{ t: 0, v: 0, e: 'sineInOut' }, { t: 0.35, v: -0.3 }], '@eye.lookX': [{ t: 0, v: 0 }], '@eye.open': [{ t: 0, v: 0.8 }] },
+};
+/** Looks back over her "shoulder": the whole sphere rolls, the eye slides round to the back. */
+const lookBack: ClipDef = {
+  name: 'lookBack', duration: 3.6,
+  tracks: {
+    '@eye.yaw': [{ t: 0, v: 0, e: 'sineInOut' }, { t: 0.5, v: -1.05, e: 'sineInOut' }, { t: 3.0, v: -1.0, e: 'sineInOut' }, { t: 3.6, v: 0 }],
+    '@eye.lookX': [{ t: 0, v: 0 }],
+    'body.r': [{ t: 0, v: 0, e: 'sineInOut' }, { t: 0.5, v: -5, e: 'sineInOut' }, { t: 3.0, v: -4, e: 'sineInOut' }, { t: 3.6, v: 0 }],
+  },
+};
+
+export const VTGM_CLIPS: ClipDef[] = [idle, armsBehind, eyeRoll, sigh, facepalm, point, hop, nod, startle, sitDangle, sitDown, peek, reclineReach, toCamera, lookBack];

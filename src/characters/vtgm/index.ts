@@ -85,6 +85,7 @@ export const VTGM: CharacterSpec = {
   gait: VTGM_GAIT,
   idle: 'idle',
   height: 380,
+  headTop: [0, -380],
   headBone: 'body',
   shadow: 84,
   // canon: in the Team_Aperture emblem she stands at roughly 55–60 % of R-3MI's height

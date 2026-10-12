@@ -75,3 +75,30 @@ function shade(hex: string, k: number): string {
   const v = [0, 2, 4].map((i) => Math.max(0, Math.min(255, Math.round(parseInt(h.slice(i, i + 2), 16) * k))));
   return `rgb(${v[0]},${v[1]},${v[2]})`;
 }
+
+let cone: Texture | null = null;
+/** A soft vertical light cone (bright at the top, fading down and to the sides). */
+export function coneTexture(): Texture {
+  if (cone) return cone;
+  const W = 128, H = 256;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d')!;
+  const img = g.createImageData(W, H);
+  for (let y = 0; y < H; y++) {
+    const v = y / (H - 1);
+    const spread = 0.12 + 0.88 * v; // cone widens downwards
+    for (let x = 0; x < W; x++) {
+      const u = Math.abs((x + 0.5) / W - 0.5) * 2 / spread;
+      const side = u >= 1 ? 0 : Math.pow(1 - u * u, 1.5);
+      const fall = Math.pow(1 - v, 1.4) * (0.35 + 0.65 * Math.min(1, v * 6));
+      const a = side * fall;
+      const i = (y * W + x) * 4;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = 255;
+      img.data[i + 3] = Math.round(a * 255);
+    }
+  }
+  g.putImageData(img, 0, 0);
+  cone = new Texture({ source: new CanvasSource({ resource: c, autoGenerateMipmaps: true }) });
+  return cone;
+}

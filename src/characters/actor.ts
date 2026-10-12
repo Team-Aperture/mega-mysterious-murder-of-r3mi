@@ -31,6 +31,8 @@ export interface CharacterSpec {
   height: number;
   /** Bone that carries the face (bubble anchor, look-at). */
   headBone: string;
+  /** Top of the head in sheet space (moves with the head bone): the speech-bubble anchor. */
+  headTop: [number, number];
   /** Shadow half-width (units). */
   shadow: number;
   /** Display scale of the rig (lets a sheet be drawn at a convenient size). Default 1. */
@@ -213,10 +215,9 @@ export class Actor {
     return { x: this.x + p.x * s * this.facingScale(), y: this.y + p.y * s };
   }
 
-  /** Top of the head in world space (for speech bubbles). */
+  /** Top of the head in world space (for speech bubbles), wherever the head actually is. */
   headTop(): { x: number; y: number } {
-    const p = this.worldPoint(this.spec.headBone);
-    return { x: p.x, y: Math.min(p.y, this.y - this.spec.height * this.scale) };
+    return this.worldPoint(this.spec.headBone, this.spec.headTop[0], this.spec.headTop[1]);
   }
 
   facingScale(): number {

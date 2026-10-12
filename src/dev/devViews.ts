@@ -87,3 +87,52 @@ export async function showPose(app: Application, params: URLSearchParams): Promi
     app.ticker.add((tk) => { for (const a of actors) a.step(Math.min(tk.deltaMS / 1000, 1 / 20)); });
   }
 }
+
+/**
+ *   ?dev=cabin&x=0&zoom=1&lights=0&clip=idle&t=1   the cabin with the three characters
+ */
+export async function showCabin(app: Application, params: URLSearchParams): Promise<void> {
+  const { Cabin } = await import('../world/cabin');
+  const { Camera } = await import('../world/camera');
+  const { propSheet } = await import('../world/propSheet');
+  const { buildAtlas } = await import('../anim/atlas');
+  const { MARK } = await import('../world/layout');
+  await loadFonts();
+  const scale = atlasScale();
+  const props = await buildAtlas('cabin', propSheet(), { scale: Math.min(scale, 1.6) });
+  const cabin = new Cabin(props);
+  const cam = new Camera();
+  cabin.attach(cam);
+  app.stage.addChild(cabin.root);
+  cabin.lightsOn = Number(params.get('lights') ?? 0);
+  cabin.lavOpen = Number(params.get('lav') ?? 0);
+  const t = Number(params.get('t') ?? 1);
+  const cast: [string, number][] = [['vtgm', MARK.meetVtgm], ['r3mi', MARK.meetR3mi], ['ich', MARK.meetIch]];
+  const actors: Actor[] = [];
+  for (const [id, x] of cast) {
+    const a = new Actor(CHARACTERS[id], await atlasFor(CHARACTERS[id], scale));
+    a.x = x;
+    a.root.zIndex = 50;
+    cabin.stage.addChild(a.root);
+    actors.push(a);
+  }
+  actors[2].face(-1, true);
+  const layout = () => { cam.resize(app.screen.width, app.screen.height); };
+  layout();
+  app.renderer.on('resize', layout);
+  cam.x = cam.tx = Number(params.get('x') ?? 0);
+  cam.zoom = cam.tz = Number(params.get('zoom') ?? 1);
+  const step = (dt: number) => {
+    cabin.update(dt);
+    for (const a of actors) { a.light = cabin.actorLight(a.x); a.step(dt); }
+    cam.update(dt);
+  };
+  for (let i = 0; i < Math.round(t * 60); i++) step(1 / 60);
+  (window as unknown as { __ready: boolean }).__ready = true;
+  if (params.get('live') === '1') app.ticker.add((tk) => step(Math.min(tk.deltaMS / 1000, 1 / 20)));
+}
+
+export async function loadFonts(): Promise<void> {
+  const fonts = ['400 24px Bungee', '900 24px Nunito', '700 24px Nunito', '400 24px Nunito', '400 24px "Special Elite"', '400 24px "Luckiest Guy"'];
+  await Promise.all(fonts.map((f) => document.fonts.load(f).catch(() => undefined)));
+}

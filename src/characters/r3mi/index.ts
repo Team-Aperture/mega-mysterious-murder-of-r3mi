@@ -91,6 +91,7 @@ export const R3MI: CharacterSpec = {
   gait: R3MI_GAIT,
   idle: 'idle',
   height: 888,
+  headTop: [18, -892],
   headBone: 'head',
   shadow: 92,
   expressions: {

@@ -110,6 +110,7 @@ export const ICH_A: CharacterSpec = {
   idle: 'idle',
   walkBase: 'stand',
   height: 690,
+  headTop: [40, -688],
   headBone: 'head',
   shadow: 64,
   expressions: ICH_EXPRESSIONS,

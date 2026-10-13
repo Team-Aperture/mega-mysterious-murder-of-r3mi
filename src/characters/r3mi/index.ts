@@ -2,8 +2,8 @@ import type { RigDef } from '../../anim/rig';
 import type { GaitDef } from '../../anim/gait';
 import type { CharacterSpec } from '../actor';
 import { Optic } from '../optic';
-import { Hose, Led, SpringBone, Tank } from '../features';
-import { EYE, J, PAL, TANK } from './geo';
+import { Handedness, Hose, Led, SpringBone, Tank } from '../features';
+import { CROWN, EYE, HUB, J, SH_CAP, TANK, tankPt } from './geo';
 import { r3miSheet } from './sheet';
 import { R3MI_CLIPS } from './clips';
 
@@ -49,6 +49,7 @@ export const R3MI_RIG: RigDef = {
     { name: 'hand.near', bone: 'hand.near', z: 37 },
     { name: 'elbow.near', bone: 'forearm.near', z: 38 },
     { name: 'shoulder.near', bone: 'upperarm.near', z: 39 },
+    { name: 'cowl', bone: 'torso', z: 39.5 },
   ],
 };
 
@@ -91,7 +92,7 @@ export const R3MI: CharacterSpec = {
   gait: R3MI_GAIT,
   idle: 'idle',
   height: 888,
-  headTop: [18, -892],
+  headTop: [18, -900],
   headBone: 'head',
   shadow: 92,
   expressions: {
@@ -117,14 +118,37 @@ export const R3MI: CharacterSpec = {
       ringColor: 0x2ecf62, irisColor: 0x5dff9a, coreColor: 0xeafff1, glowColor: 0x2ecf62, glowSize: 150,
       saccades: 1.6, blink: [2.2, 5.5],
     }));
-    a.features.push(new Tank(a, { bone: 'tank', z: 13, ...TANK, level: 0.72, fluid: 0x45e07a, fluidHi: 0x9dffc4, glow: 0x2ecf62 }));
-    const hose = { base: '#2f2c3a', accent: PAL.accent };
+    a.features.push(new Tank(a, { bone: 'tank', z: 13, ...TANK, level: 0.58, fluid: 0x45e07a, fluidHi: 0x9dffc4, glow: 0x2ecf62 }));
+    const hose = { base: '#1f2a1e', accent: '#b6e05a' };
+    // the elbow hose is fluid-filled: translucent green, glowing like the tank
+    const fluidHose = { base: '#3dbb55', accent: '#d6ffd9', emissive: true };
     const T = TANK;
-    a.features.push(new Hose(a, { name: 'a', z: 15, a: { bone: 'tank', x: T.x + 14, y: T.y - 26 }, b: { bone: 'head', x: -42, y: -836 }, c: { bone: 'tank', x: -150, y: -930 }, width: 26, ...hose }));
-    a.features.push(new Hose(a, { name: 'b', z: 16, a: { bone: 'tank', x: T.x + 36, y: T.y - 26 }, b: { bone: 'neck', x: -6, y: -672 }, c: { bone: 'tank', x: -62, y: -838 }, width: 22, ...hose }));
-    a.features.push(new Hose(a, { name: 'c', z: 17, a: { bone: 'tank', x: T.x + 25, y: T.y + T.h + 24 }, b: { bone: 'pelvis', x: -46, y: -400 }, c: { bone: 'tank', x: -170, y: -470 }, width: 23, ...hose }));
-    a.features.push(new Led(a, { name: 'chest', bone: 'torso', z: 29, x: 18, y: -524, w: 11, h: 40, color: 0x7dffae, glow: 0x2ecf62, param: 'chestLed' }));
-    a.features.push(new Led(a, { name: 'shoulder', bone: 'upperarm.near', z: 40, x: J.shN[0], y: J.shN[1], w: 38, h: 6, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
-    a.features.push(new Led(a, { name: 'elbow', bone: 'forearm.near', z: 41, x: J.elN[0], y: J.elN[1], w: 26, h: 4.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
+    const top = tankPt(T.x + T.w / 2 - 6, T.y - 34), corner = tankPt(T.x - 2, T.y + T.h + 12);
+    const at = (bone: string, p: readonly number[], dx = 0, dy = 0) => ({ bone, x: p[0] + dx, y: p[1] + dy });
+    // canon: exactly three hoses. Two round hoops over the top: crown → junction behind the head
+    // (the taller one) and junction → tank-top socket (in front where they meet) …
+    a.features.push(new Hose(a, { name: 'a', z: 15, a: at('head', CROWN, -9, -12), b: at('tank', HUB, 0, -4), c: { bone: 'head', x: -14, y: -968 }, c2: { bone: 'tank', x: -78, y: -952 }, width: 16, segments: 22, ...hose }));
+    a.features.push(new Hose(a, { name: 'b', z: 16, a: at('tank', HUB, -6, -8), b: at('tank', top), c: { bone: 'tank', x: -74, y: -904 }, c2: { bone: 'tank', x: top[0] - 6, y: -906 }, width: 16, segments: 22, ...hose }));
+    // … and one from the tank's back-bottom corner, straight down, then a ')' bow behind the
+    // near upper arm, plugging into the back of his (left) elbow under the ringed disk. Its twin
+    // goes to the far elbow while he faces right (Handedness), so it is always the left elbow.
+    a.features.push(new Hose(a, { name: 'c', z: 34, a: at('tank', corner), b: at('forearm.near', J.elN, -28, 26), c: { bone: 'tank', x: corner[0] - 6, y: corner[1] + 70 }, c2: { bone: 'forearm.near', x: J.elN[0] - 85, y: J.elN[1] - 10 }, width: 18, segments: 22, ...fluidHose }));
+    // (facing right the left elbow is the far one: the twin drops behind his back and comes round low)
+    a.features.push(new Hose(a, { name: 'cFar', z: 6.5, a: at('tank', corner), b: at('forearm.far', J.elF, -28, 26), c: { bone: 'tank', x: corner[0] + 14, y: corner[1] + 170 }, c2: { bone: 'forearm.far', x: J.elF[0] - 80, y: J.elF[1] + 70 }, width: 18, segments: 22, ...fluidHose }));
+    // chest slot: a notch at the bottom of the plate on the body centre line, two lit cells (canon)
+    a.features.push(new Led(a, { name: 'chest', bone: 'torso', z: 29, x: 33, y: -514, w: 11, h: 26, color: 0x7dffae, glow: 0x2ecf62, param: 'chestLed' }));
+    a.features.push(new Led(a, { name: 'chest2', bone: 'torso', z: 29, x: 33, y: -487, w: 10, h: 10, color: 0x7dffae, glow: 0x2ecf62, param: 'chestLed' }));
+    // green rings on the big shoulder disk and the elbow of his left arm
+    a.features.push(new Led(a, { name: 'shoulder', bone: 'upperarm.near', z: 40, x: J.shN[0] + SH_CAP[0], y: J.shN[1] + SH_CAP[1], w: 36, h: 5.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
+    a.features.push(new Led(a, { name: 'elbow', bone: 'forearm.near', z: 41, x: J.elN[0] - 6, y: J.elN[1] - 2, w: 24, h: 4.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
+    a.features.push(new Led(a, { name: 'shoulderFar', bone: 'upperarm.far', z: 6.8, x: J.shF[0] + SH_CAP[0], y: J.shF[1] + SH_CAP[1], w: 36, h: 5.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
+    a.features.push(new Led(a, { name: 'elbowFar', bone: 'forearm.far', z: 6.9, x: J.elF[0] - 6, y: J.elF[1] - 2, w: 24, h: 4.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
+    // the sheet is the canon mirrored (it faces right); facing right, the left arm is the far one
+    a.features.push(new Handedness(a, {
+      swapWhen: 1,
+      attach: { 'shoulder.near': 'shoulder.near#plain', 'shoulder.far': 'shoulder.far#disk', 'elbow.near': 'elbow.near#plain', 'elbow.far': 'elbow.far#ringed', cowl: 'cowl#plain' },
+      canon: ['led.shoulder', 'led.elbow', 'hose.c'],
+      swapped: ['led.shoulderFar', 'led.elbowFar', 'hose.cFar'],
+    }));
   },
 };

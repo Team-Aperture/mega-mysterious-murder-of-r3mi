@@ -24,17 +24,19 @@ const idle: ClipDef = {
   },
 };
 
-/** Fidget variant: fingertips of both hands tap together in front of the chest. Nervous. */
+/** Fidget variant: fingertips of both hands tap together in front of the chest. Nervous.
+ *  (Angles solved for the 3/4 rig: the near arm reaches forward from the back, the far arm
+ *  folds up at the front edge.) */
 const fidget: ClipDef = blocked('fidget', 2.4, [
-  [0, { 'torso.r': 6, 'neck.r': 6, 'head.r': 6, 'upperarm.near.r': -38, 'forearm.near.r': -78, 'hand.near.r': -18, 'upperarm.far.r': -42, 'forearm.far.r': -70, 'hand.far.r': -10, 'pelvis.y': 4 }, 'sineInOut'],
-  [0.3, { 'forearm.near.r': -84, 'forearm.far.r': -64, 'head.r': 8 }, 'quadOut'],
-  [0.5, { 'forearm.near.r': -78, 'forearm.far.r': -70 }, 'quadOut'],
-  [0.7, { 'forearm.near.r': -84, 'forearm.far.r': -64 }, 'quadOut'],
-  [0.9, { 'forearm.near.r': -78, 'forearm.far.r': -70, 'head.r': 4 }, 'sineInOut'],
-  [1.5, { 'forearm.near.r': -84, 'forearm.far.r': -64, 'head.r': 9 }, 'quadOut'],
-  [1.7, { 'forearm.near.r': -78, 'forearm.far.r': -70 }, 'quadOut'],
-  [1.9, { 'forearm.near.r': -84, 'forearm.far.r': -64 }, 'quadOut'],
-  [2.4, { 'forearm.near.r': -78, 'forearm.far.r': -70, 'head.r': 6 }, 'sineInOut'],
+  [0, { 'torso.r': 6, 'neck.r': 6, 'head.r': 6, 'upperarm.near.r': -46, 'forearm.near.r': -80, 'hand.near.r': -18, 'upperarm.far.r': 12, 'forearm.far.r': -138, 'hand.far.r': -10, 'pelvis.y': 4 }, 'sineInOut'],
+  [0.3, { 'forearm.near.r': -86, 'forearm.far.r': -132, 'head.r': 8 }, 'quadOut'],
+  [0.5, { 'forearm.near.r': -80, 'forearm.far.r': -138 }, 'quadOut'],
+  [0.7, { 'forearm.near.r': -86, 'forearm.far.r': -132 }, 'quadOut'],
+  [0.9, { 'forearm.near.r': -80, 'forearm.far.r': -138, 'head.r': 4 }, 'sineInOut'],
+  [1.5, { 'forearm.near.r': -86, 'forearm.far.r': -132, 'head.r': 9 }, 'quadOut'],
+  [1.7, { 'forearm.near.r': -80, 'forearm.far.r': -138 }, 'quadOut'],
+  [1.9, { 'forearm.near.r': -86, 'forearm.far.r': -132 }, 'quadOut'],
+  [2.4, { 'forearm.near.r': -80, 'forearm.far.r': -138, 'head.r': 6 }, 'sineInOut'],
 ], { loop: true });
 
 /** „Hiii!": up on the toes, big open-hand wave. */
@@ -214,15 +216,16 @@ const deepSleep: ClipDef = {
   tracks: { ...sleep.tracks, '@chestLed': [{ t: 0, v: 0 }], '@tank.bubbles': [{ t: 0, v: 0 }], 'torso.sy': [{ t: 0, v: 1 }] },
 };
 
-/** Two slow claps (for ICH's silent pose). */
+/** Two slow claps (for ICH's silent pose). The far hand waits in front of the chest, the near
+ *  one swings up into it (contact solved for the 3/4 rig at about x 170, y −560). */
 const clap: ClipDef = blocked('clap', 1.8, [
   [0, { 'upperarm.near.r': 0, 'forearm.near.r': -6, 'upperarm.far.r': 0, 'forearm.far.r': -6 }, 'sineInOut'],
-  [0.35, { 'upperarm.near.r': -40, 'forearm.near.r': -66, 'upperarm.far.r': -52, 'forearm.far.r': -58 }, 'sineInOut'],
-  [0.6, { 'upperarm.near.r': -44, 'forearm.near.r': -78 }, 'quadIn'],
-  [0.68, { 'upperarm.near.r': -40, 'forearm.near.r': -66 }, 'sineInOut'],
-  [1.1, { 'upperarm.near.r': -44, 'forearm.near.r': -78 }, 'quadIn'],
-  [1.18, { 'upperarm.near.r': -40, 'forearm.near.r': -66 }, 'sineInOut'],
+  [0.35, { 'upperarm.near.r': -44, 'forearm.near.r': -46, 'upperarm.far.r': 14, 'forearm.far.r': -126 }, 'sineInOut'],
+  [0.6, { 'upperarm.near.r': -50, 'forearm.near.r': -60 }, 'quadIn'],
+  [0.68, { 'upperarm.near.r': -44, 'forearm.near.r': -46 }, 'sineInOut'],
+  [1.1, { 'upperarm.near.r': -50, 'forearm.near.r': -60 }, 'quadIn'],
+  [1.18, { 'upperarm.near.r': -44, 'forearm.near.r': -46 }, 'sineInOut'],
   [1.8, { 'upperarm.near.r': 0, 'forearm.near.r': -6, 'upperarm.far.r': 0, 'forearm.far.r': -6 }],
-], { events: [{ t: 0.66, name: 'sfx', data: 'clap' }, { t: 1.16, name: 'sfx', data: 'clap' }] });
+], { events: [{ t: 0.6, name: 'sfx', data: 'clap' }, { t: 1.1, name: 'sfx', data: 'clap' }] });
 
 export const R3MI_CLIPS: ClipDef[] = [clap, idle, fidget, wave, point, flinch, duck, nod, beat, shrug, sitJam, sitKneesUp, squished, legsOut, complain, sleepSlump, sleep, deepSleep];

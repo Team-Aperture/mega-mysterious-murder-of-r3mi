@@ -22,9 +22,19 @@ mentions it.
 
 ### Visual design (canon, adapted)
 - Bone-white egg helmet with a centre seam and a graphite side plate; **one** green eye on the front.
-- Bone-white chest shield, graphite ribbed waist with navy ribs, green slot light on the lower chest.
-- Graphite limbs, bone-white thigh plates, dark joint discs; green ring lights on the near shoulder and elbow.
-- Green tank backpack with bubbling fluid; two hoses to the back of the head, one to the hip.
+- Bone-white chest shield, graphite ribbed waist with navy ribs, green slot light on the lower chest,
+  toward the front (in front of the centre seam).
+- Graphite limbs, bone-white thigh plates, dark joint discs.
+- **Handedness (canon portrait faces left, three-quarter turned toward the viewer):** his **left** arm
+  carries the asymmetric details: a big stepped black shoulder disk with a green ring on its end cap,
+  and a green-ringed elbow. In the facing-left view that arm is the near one and hangs on the **back**
+  side of the body, directly under the tank; the plain right arm hangs at the chest's front edge, half
+  hidden. When he faces right the details stay on his left arm (now the far one).
+- Green tank backpack, high on his back (top at mid-head height, bottom at the shoulder disk), leaning
+  back about 10°; glint on its front side. Exactly **three hoses**: a round hoop from a port on the
+  crown to a junction just behind the head, a second hoop from there to the tank-top socket, and a
+  bright, fluid-filled green hose from the tank's back-bottom corner that bows out behind his left
+  upper arm and plugs into the back of his left elbow.
 - Adaptation: proportions pushed slightly lankier (longer shins and forearms) for airplane comedy.
   Rendering is clean cartoon cel shading instead of the portrait's painterly airbrush.
 
@@ -62,7 +72,7 @@ mentions it.
 ### Animation requirements
 - Idle (stooped breathing, eye saccades, tank bubbling), walk, talk accent, wave, point, head-bonk,
   flinch, arms-crossed, the full **seat struggle** sequence, fall-asleep (eye power-down), sleeping idle.
-- Secondary motion: three hoses (rope simulation), tank fluid slosh, head lag on the neck.
+- Secondary motion: the three hoses (rope simulation), tank fluid slosh, head lag on the neck.
 - Needs authored art eventually for: a front view and a back view, a true profile head, and hand poses.
 
 ---
@@ -190,6 +200,8 @@ mentions it.
 
 **R-3MI**
 - One green eye. Tall. Egg helmet. Green tank backpack. Speaks German.
+- The ringed shoulder disk, the ringed elbow and the fluid hose belong to his **left** arm, under the
+  tank (never mirrored onto the right arm, never on the front edge of the chest).
 - Uses only V-TGM's designation. Never cruel.
 
 **V-TGM**

@@ -15,11 +15,15 @@ export interface HoseDef {
   b: Anchor;
   /** Bulge control point (follows its bone). */
   c: Anchor;
+  /** Optional second control (near b): makes the rest shape a cubic, for round loops. */
+  c2?: Anchor;
   width: number;
   base: string;
   accent: string;
   segments?: number;
   stiffness?: number;
+  /** Fluid-filled hoses glow and are not darkened by scene light. */
+  emissive?: boolean;
 }
 
 /**
@@ -33,16 +37,18 @@ export class Hose implements Feature {
   private readonly wa: Vec2 = { x: 0, y: 0 };
   private readonly wb: Vec2 = { x: 0, y: 0 };
   private readonly wc: Vec2 = { x: 0, y: 0 };
+  private readonly wc2: Vec2 | undefined;
 
   constructor(readonly actor: Actor, readonly d: HoseDef) {
-    const n = d.segments ?? 12;
+    const n = d.segments ?? (d.c2 ? 16 : 12);
+    if (d.c2) this.wc2 = { x: 0, y: 0 };
     this.rope = new ShapeRope(n, d.stiffness ?? 16, 0.02, 600);
     this.pts = Array.from({ length: n }, () => new Point());
     const tex = hoseTexture(d.base, d.accent);
     this.mesh = new MeshRope({ texture: tex, points: this.pts, textureScale: d.width / tex.height });
     const holder = new Container();
     holder.addChild(this.mesh);
-    actor.view.addLive({ name: `hose.${d.name}`, bone: d.a.bone, z: d.z, display: holder, follow: false });
+    actor.view.addLive({ name: `hose.${d.name}`, bone: d.a.bone, z: d.z, display: holder, follow: false, emissive: d.emissive });
   }
 
   private anchors(a: Actor): void {
@@ -50,18 +56,24 @@ export class Hose implements Feature {
     const B = a.worldPoint(this.d.b.bone, this.d.b.x, this.d.b.y);
     const C = a.worldPoint(this.d.c.bone, this.d.c.x, this.d.c.y);
     this.wa.x = A.x; this.wa.y = A.y; this.wb.x = B.x; this.wb.y = B.y; this.wc.x = C.x; this.wc.y = C.y;
+    if (this.d.c2 && this.wc2) {
+      const C2 = a.worldPoint(this.d.c2.bone, this.d.c2.x, this.d.c2.y);
+      this.wc2.x = C2.x; this.wc2.y = C2.y;
+    }
   }
 
   reset(a: Actor): void {
     a.sk.solve(a.pose);
     this.anchors(a);
-    this.rope.reset(this.wa, this.wc, this.wb);
+    this.rope.reset(this.wa, this.wc, this.wb, this.wc2);
     this.toLocal(a);
   }
 
   post(a: Actor, dt: number): void {
     this.anchors(a);
-    this.rope.step(dt, this.wa, this.wc, this.wb);
+    // a zero step (first frame after a reset or a turn applied instantly) snaps to the rest shape
+    if (dt > 0) this.rope.step(dt, this.wa, this.wc, this.wb, this.wc2);
+    else this.rope.reset(this.wa, this.wc, this.wb, this.wc2);
     this.toLocal(a);
   }
 
@@ -86,6 +98,8 @@ export interface TankDef {
   fluid: number;
   fluidHi: number;
   glow: number;
+  /** Lean of the glass in degrees (the drawing is rotated about its centre by the same amount). */
+  tilt?: number;
 }
 
 /**
@@ -101,11 +115,20 @@ export class Tank implements Feature {
   private prevV = 0;
   private bubbles: { x: number; y: number; r: number; v: number }[] = [];
 
+  private readonly lean: number;
+
   constructor(readonly actor: Actor, readonly d: TankDef) {
     const c = new Container();
+    // the fluid is drawn in the glass's own (leaned) frame, rotated about the glass centre
+    const inner = new Container();
+    this.lean = ((d.tilt ?? 0) * Math.PI) / 180;
+    inner.pivot.set(d.w / 2, d.h / 2);
+    inner.position.set(d.w / 2, d.h / 2);
+    inner.rotation = this.lean;
     this.glow.anchor.set(0.5);
     this.glow.blendMode = 'add';
-    c.addChild(this.glow, this.g);
+    inner.addChild(this.glow, this.g);
+    c.addChild(inner);
     actor.view.addLive({ name: 'tank.fluid', bone: d.bone, z: d.z, display: c, ox: d.x, oy: d.y, emissive: true });
   }
 
@@ -137,7 +160,8 @@ export class Tank implements Feature {
     const g = this.g;
     g.clear();
     const lvl = d.h * (1 - d.level);
-    const boneRot = a.sk.rot(a.sk.bone(d.bone));
+    // keep the surface (nearly) level in the world: undo the bone's rotation and the glass lean
+    const boneRot = a.sk.rot(a.sk.bone(d.bone)) + this.lean;
     const t = this.tilt.value - boneRot * 0.85;
     const w = d.w;
     const yl = lvl - Math.tan(t) * w * 0.5 + Math.sin(a.time * 3.1) * 0.6;
@@ -148,7 +172,8 @@ export class Tank implements Feature {
     // bright meniscus line and inner streak
     g.moveTo(0, clamp(yl, 2, d.h)).quadraticCurveTo(w / 2, clamp(mid, 2, d.h), w, clamp(yr, 2, d.h))
       .stroke({ color: d.fluidHi, width: 2.2, alpha: 0.9 });
-    g.rect(w * 0.18, Math.max(yl, yr) + 4, w * 0.12, d.h - Math.max(yl, yr) - 8).fill({ color: d.fluidHi, alpha: 0.35 });
+    // the light comes from the front and top (canon): the streak is on the front side of the glass
+    g.rect(w * 0.68, Math.max(yl, yr) + 4, w * 0.12, d.h - Math.max(yl, yr) - 8).fill({ color: d.fluidHi, alpha: 0.35 });
     // bubbles
     const rate = bub;
     if (a.rng.next() < dt * 7 * rate) this.spawn(a);
@@ -212,6 +237,49 @@ export class Led implements Feature {
     this.glow.alpha = 0.55 * Math.min(1, v);
     this.glow.visible = v > 0.02;
     this.glow.scale.set((Math.max(d.w, d.h) * 3.2) / 64);
+  }
+}
+
+/* ------------------------------------------------------------------ handedness */
+
+export interface HandednessDef {
+  /** Facing (+1 right, −1 left) in which the sheet's own decorations are on the wrong side. */
+  swapWhen: 1 | -1;
+  /** Slot → part overrides applied while swapped (e.g. the big shoulder disk to the other arm). */
+  attach: Record<string, string>;
+  /** Live displays (by name, e.g. "led.elbow", "hose.c") shown only while NOT swapped … */
+  canon: string[];
+  /** … and their counterparts shown only while swapped. */
+  swapped: string[];
+}
+
+/**
+ * Keeps asymmetric details on the correct side of the body when a character turns.
+ * Mirroring a side-view drawing also mirrors its handedness (a ring on the left arm would end
+ * up on the right one); this moves such details to the other limb at the moment of the flip.
+ */
+export class Handedness implements Feature {
+  private on = false;
+  constructor(readonly actor: Actor, readonly d: HandednessDef) {}
+
+  private isSwapped(a: Actor): boolean { return Math.sign(a.facingScale()) === this.d.swapWhen; }
+
+  pre(a: Actor): void {
+    this.on = this.isSwapped(a);
+    if (!this.on) return;
+    for (const [slot, part] of Object.entries(this.d.attach)) if (!(slot in a.pose.attach)) a.pose.attach[slot] = part;
+  }
+
+  post(a: Actor): void {
+    for (const l of a.view.live) {
+      if (this.d.canon.includes(l.name)) l.display.visible = !this.on;
+      else if (this.d.swapped.includes(l.name)) l.display.visible = this.on;
+    }
+  }
+
+  reset(a: Actor): void {
+    this.on = this.isSwapped(a);
+    this.post(a);
   }
 }
 

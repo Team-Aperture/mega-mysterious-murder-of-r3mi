@@ -6,7 +6,7 @@ import { atlasScale } from '../app/stage';
 /**
  * Developer views used for art iteration and automated screenshots:
  *   ?dev=sheet&c=r3mi                       the raw SVG rig sheet (what an artist would edit)
- *   ?dev=pose&c=r3mi&clip=walk&t=0.4&expr=happy   one deterministic frame, rendered by the game runtime
+ *   ?dev=pose&c=r3mi&clip=walk&t=0.4&expr=happy&face=-1   one deterministic frame, rendered by the game runtime
  * `clip=walk` walks the character across the frame; any other value plays that clip.
  */
 export function showSheet(ui: HTMLElement, id: string): void {
@@ -23,6 +23,7 @@ export async function showPose(app: Application, params: URLSearchParams): Promi
   const clip = params.get('clip') ?? 'idle';
   const t = Number(params.get('t') ?? 0);
   const expr = params.get('expr') ?? 'neutral';
+  const face = params.get('face') === '-1' ? -1 : 1;
   const scale = atlasScale();
   const world = new Container();
   app.stage.addChild(world);
@@ -52,9 +53,10 @@ export async function showPose(app: Application, params: URLSearchParams): Promi
   actors.forEach((a, i) => {
     const x0 = (i - (actors.length - 1) / 2) * spacing;
     a.simulateTo(t, () => {
-      a.x = clip === 'walk' ? x0 - 400 : x0;
+      a.x = clip === 'walk' ? x0 - 400 * face : x0;
+      a.face(face, true);
       a.setExpression(expr, true);
-      if (clip === 'walk') void a.walkTo(x0 + 400);
+      if (clip === 'walk') void a.walkTo(x0 + 400 * face);
       else if (clip !== 'idle') void a.play(clip, { fade: 0 });
     });
   });
@@ -73,8 +75,9 @@ export async function showPose(app: Application, params: URLSearchParams): Promi
       world.addChild(a.root);
       a.simulateTo(t + i * step, () => {
         a.x = 0;
+        a.face(face, true);
         a.setExpression(expr, true);
-        if (clip === 'walk') void a.walkTo(4000);
+        if (clip === 'walk') void a.walkTo(4000 * face);
         else if (clip !== 'idle') void a.play(clip, { fade: 0 });
       });
       a.root.position.x = -W / 2 + cell * (i + 0.5);

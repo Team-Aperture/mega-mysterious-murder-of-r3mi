@@ -152,6 +152,19 @@ describe('secondary motion', () => {
     expect(r.pts[9]).toEqual({ x: 100, y: 0 });
     expect(Math.min(...r.pts.map((p) => p.y))).toBeLessThan(-20); // still arched
   });
+  it('a second control point makes a round loop that overhangs its ends (cubic rest shape)', () => {
+    // R-3MI's crown hoop: both controls high and pushed outward, like the canon's round loops
+    const r = new ShapeRope(20);
+    const A = { x: 0, y: 0 }, B = { x: -70, y: 80 }, C1 = { x: 30, y: -100 }, C2 = { x: -140, y: -70 };
+    r.reset(A, C1, B, C2);
+    for (let i = 0; i < 60; i++) r.step(1 / 60, A, C1, B, C2);
+    expect(r.pts[0]).toEqual(A);
+    expect(r.pts[19]).toEqual(B);
+    const xs = r.pts.map((p) => p.x), ys = r.pts.map((p) => p.y);
+    expect(Math.min(...ys)).toBeLessThan(-40); // rises well above the start
+    expect(Math.max(...xs)).toBeGreaterThan(5); // bulges past the start …
+    expect(Math.min(...xs)).toBeLessThan(-80); // … and past the end: a loop, not a tent
+  });
 });
 
 describe('easing and rng', () => {

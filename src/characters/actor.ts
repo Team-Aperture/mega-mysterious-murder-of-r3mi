@@ -33,6 +33,8 @@ export interface CharacterSpec {
   headBone: string;
   /** Top of the head in sheet space (moves with the head bone): the speech-bubble anchor. */
   headTop: [number, number];
+  /** Centre of the magnifier lens in sheet space, on `hand.near` (ICH only): used to measure reach. */
+  lens?: [number, number];
   /** Shadow half-width (units). */
   shadow: number;
   /** Display scale of the rig (lets a sheet be drawn at a convenient size). Default 1. */

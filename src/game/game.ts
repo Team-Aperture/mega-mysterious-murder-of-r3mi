@@ -3,6 +3,7 @@ import { buildAtlas, type Atlas } from '../anim/atlas';
 import { Actor, type Facing } from '../characters/actor';
 import { CHARACTERS, atlasFor } from '../characters/registry';
 import { ichSpec } from '../characters/ich/variants';
+import { DEFAULT_REACH, measureLensReach, type LensReach } from '../characters/ich/reach';
 import { Audio } from '../audio/audio';
 import { clamp, Rng } from '../engine/math';
 import { ease, type EaseSpec } from '../engine/ease';
@@ -80,6 +81,8 @@ export class Game {
   /** Hooks for the story (trip trigger etc.). */
   onTick: ((dt: number) => void) | null = null;
   paused = false;
+  /** How far ahead of his feet ICH holds the magnifier (measured on the active design). */
+  lensReach: LensReach = DEFAULT_REACH;
   private timers: { left: number; done: () => void }[] = [];
   private loadingEl: HTMLElement | null = null;
 
@@ -102,6 +105,7 @@ export class Game {
     this.cabin.attach(this.cam);
     this.world.addChild(this.cabin.root);
     this.app.stage.addChild(this.world);
+    this.lensReach = measureLensReach(ichS, ichA);
     this.cast = {
       ich: new Actor(ichS, ichA, 3),
       r3mi: new Actor(CHARACTERS.r3mi, r3A, 5),

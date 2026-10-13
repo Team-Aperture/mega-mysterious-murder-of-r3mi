@@ -3,6 +3,8 @@ import type { CharacterSpec } from './actor';
 import { R3MI } from './r3mi';
 import { VTGM } from './vtgm';
 import { ICH_A } from './ich';
+import { ICH_B } from './ich/variantB';
+import { ICH_C } from './ich/variantC';
 
 /**
  * All characters by id, and their atlases (built once per session).
@@ -12,6 +14,9 @@ export const CHARACTERS: Record<string, CharacterSpec> = {
   r3mi: R3MI,
   vtgm: VTGM,
   ich: ICH_A,
+  // the other two ICH design directions (dev views, Lab); the game picks one via settings
+  'ich-b': ICH_B,
+  'ich-c': ICH_C,
 };
 
 const authored = import.meta.glob('/art/authored/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;

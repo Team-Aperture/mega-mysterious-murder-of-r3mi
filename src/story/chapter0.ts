@@ -215,13 +215,9 @@ async function examine(g: Game, ui: ChapterUi, art: string, caption: string, lin
   }
 }
 
-/**
- * Where ICH has to stand (facing left) so his lens ends up over world x `cx`: the leaning
- * examine reaches about 335 units ahead of his feet, the raised one about 108 (measured).
- */
-const lensAt = (cx: number, pose: 'examine' | 'examineUp'): number => cx + (pose === 'examine' ? 335 : 108);
-
 function hotspots(g: Game, ui: ChapterUi, phase: 'explore' | 'investigate'): Hotspot[] {
+  /** Where ICH has to stand (facing left) so his lens ends up over world x `cx` (reach measured per design). */
+  const lensAt = (cx: number, pose: 'examine' | 'examineUp'): number => cx + g.lensReach[pose];
   const { ich, vtgm } = g.cast;
   const inv = phase === 'investigate';
   const seenOnce = (id: string) => { if (!g.progress.seen.includes(id)) { g.progress.seen.push(id); saveProgress(g.progress); } };

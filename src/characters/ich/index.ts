@@ -9,8 +9,11 @@ import { ICH_CLIPS } from './clips';
 
 const b = (name: string, parent: string | null, p: readonly number[]) => ({ name, parent, x: p[0], y: p[1] });
 
+/** Joint layout of an ICH design direction: the same joints as A, at its own positions. */
+export type IchJoints = Record<keyof typeof J, readonly [number, number]>;
+
 /** Bone names are shared by all three ICH design directions, so every clip works on each. */
-export const ICH_BONES = (j: typeof J) => [
+export const ICH_BONES = (j: IchJoints) => [
   b('root', null, [0, 0]),
   b('pelvis', 'root', j.pelvis),
   b('torso', 'pelvis', j.torso),
@@ -112,6 +115,7 @@ export const ICH_A: CharacterSpec = {
   height: 690,
   headTop: [40, -688],
   headBone: 'head',
+  lens: [J.wrN[0] + 4, J.wrN[1] + 128],
   shadow: 64,
   expressions: ICH_EXPRESSIONS,
   build: ichFeatures({ cx: PLATE.cx, cy: PLATE.cy, size: 74, glowW: 300 }),

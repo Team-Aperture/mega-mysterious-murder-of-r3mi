@@ -188,15 +188,16 @@ export class Game {
     this.step(dt);
     this.onTick?.(dt);
     this.updateHotspotUi();
-    if (this.timers.length) {
-      const due = this.timers.filter((t) => (t.left -= dt) <= 0);
-      if (due.length) { this.timers = this.timers.filter((t) => t.left > 0); for (const t of due) t.done(); }
-    }
   }
 
   /** Advances everything by dt (deterministic given the same inputs). */
   step(dt: number): void {
     this.time += dt;
+    // game-clock waits advance with the world, so skipping and Lab seeking keep them in step
+    if (this.timers.length) {
+      const due = this.timers.filter((t) => (t.left -= dt) <= 0);
+      if (due.length) { this.timers = this.timers.filter((t) => t.left > 0); for (const t of due) t.done(); }
+    }
     this.cabin.update(dt);
     for (const a of Object.values(this.cast)) {
       a.light = this.cabin.actorLight(a.x, a.y - 300);
@@ -398,10 +399,11 @@ export class Game {
   }
 
   /* ------------------------------------------------------------------ actor events → sound */
-  private onActorEvent(a: Actor, e: { name: string; data?: unknown }): void {
+  /** Footsteps, clip sound events and impacts (also used by the Animation Lab's own actors). */
+  onActorEvent(a: Actor, e: { name: string; data?: unknown }): void {
     if (e.name === 'step') {
       const sx = this.cam.toScreen(a.x, 0).x / Math.max(1, this.cam.viewW) * 2 - 1;
-      this.audio.sfx(`step.${a.id === 'ich' ? 'ich' : a.id}`, { pan: clamp(sx, -0.8, 0.8), gain: a.id === 'r3mi' ? 0.8 : 0.7 });
+      this.audio.sfx(`step.${a.id.startsWith('ich') ? 'ich' : a.id}`, { pan: clamp(sx, -0.8, 0.8), gain: a.id === 'r3mi' ? 0.8 : 0.7 });
     } else if (e.name === 'sfx') this.audio.sfx(String(e.data));
     else if (e.name === 'impact' && !this.settings.reducedMotion) this.cam.shake(5);
   }

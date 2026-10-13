@@ -24,7 +24,7 @@ export function resetWorld(g: Game): void {
   for (const t of g.tosses.splice(0)) t.s.destroy();
   g.attached.length = 0;
   for (const s of [...g.cabin.stage.children]) if ((s as { label?: string }).label === 'prop') s.destroy();
-  g.dialogue.close();
+  g.dialogue.reset();
   g.clearCards();
   const { ich, r3mi, vtgm } = g.cast;
   for (const a of [ich, r3mi, vtgm]) { a.reset(); a.root.visible = true; a.scale = a.spec.scale ?? 1; }

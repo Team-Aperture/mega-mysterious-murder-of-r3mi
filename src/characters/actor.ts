@@ -298,6 +298,8 @@ export class Actor {
     this.reset();
     setup();
     let left = t;
+    // at t = 0 nothing would be stepped and the display would keep its previous state
+    if (left <= 1e-6) this.step(0);
     while (left > 1e-6) {
       const h = Math.min(dt, left);
       this.step(h);

@@ -179,6 +179,18 @@ export class Dialogue {
     if (this.active) this.finish(this.active, true);
   }
 
+  /** Drops everything on screen and pending (world reset, Lab seeking). Pending promises never resolve. */
+  reset(): void {
+    if (this.active) { this.active.el.remove(); this.active = null; }
+    this.layer.innerHTML = '';
+    this.paActive = null;
+    this.paEl.classList.remove('show');
+    this.choiceEl?.remove();
+    this.choiceEl = null;
+    this.timers = [];
+    this.pending = 0;
+  }
+
   private finish(a: Active, silent = false): void {
     if (a.closing) return;
     a.closing = true;

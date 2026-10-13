@@ -185,6 +185,8 @@ class Lab {
     this.timeEl.append(h('div', { class: 'ctl' }, restart, stepB, this.playBtn, stepF, speed, loop, this.readout), bar);
 
     this.root.append(top, this.side, this.timeEl);
+    // short screens (phones in landscape): the stage needs the room, the panel opens on demand
+    if (window.innerHeight < 500) this.root.classList.add('side-closed');
     document.body.append(this.root);
   }
 

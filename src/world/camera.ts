@@ -50,6 +50,7 @@ export class Camera {
   /** Eased scripted move; resolves when done. */
   moveTo(x: number, y: number, zoom: number, dur: number, e: EaseSpec = 'inOut'): Promise<void> {
     this.move?.resolve();
+    if (this.calm && dur > 0) dur = Math.min(dur * 0.4, 0.6);
     if (dur <= 0) {
       this.x = this.tx = x; this.y = this.ty = y; this.zoom = this.tz = zoom;
       this.move = null;
@@ -78,7 +79,13 @@ export class Camera {
     return { x, zoom };
   }
 
-  shake(px: number): void { this.shakeA = Math.max(this.shakeA, px); this.shakeT = 0; }
+  /** Reduced motion (setting): no shake, and scripted moves are shorter and gentler. */
+  calm = false;
+
+  shake(px: number): void {
+    if (this.calm) return;
+    this.shakeA = Math.max(this.shakeA, px); this.shakeT = 0;
+  }
 
   update(dt: number): void {
     if (this.move) {

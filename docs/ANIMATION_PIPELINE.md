@@ -122,8 +122,8 @@ UI micro-animation is done in CSS.
 | 3 | **ICH's legibility** during mirroring, turns, falls. | Letters are a separate vector layer that is never mirrored, keeps a minimum on-screen size, and is covered at most partially and briefly. Tested in the lab at phone scale. |
 | 4 | **Comic timing** needs iteration and real audiences. | All gags are data (keyframes and sequence tracks) and can be tuned in the lab at 0.25× speed. Playtests needed. |
 | 5 | **Mobile performance** (atlas memory, additive glow fill rate). | Atlas scale adapts to the device; glows are pre-rendered sprites, no blur filters in the hot path; measured on emulated devices (real devices still to be tested). |
-| 6 | **Canon fidelity.** Existing art is a pair of flattened paintings; the rig art is a re-interpretation. | Silhouette, colours and key features taken directly from the portraits; side-by-side check in the lab's model sheet. Team sign-off needed. |
+| 6 | **Canon fidelity.** Existing art is a pair of flattened paintings; the rig art is a re-interpretation. | Silhouette, colours, key features **and handedness** taken directly from the portraits (R-3MI's had been mirrored and was corrected, see [STATUS.md](STATUS.md)); side-by-side check in the Lab's lineup (*Aufstellung*). Team sign-off needed. |
 | 7 | **Language rule.** The brief asks for German dialogue; canon says V-TGM speaks English. | Canon wins: V-TGM speaks English with a German subtitle. Needs explicit confirmation. |
 | 8 | **The secret ending** must be fair but invisible. | Clues are environmental and deniable; no line states the truth. Documented in a spoiler file for the team only. |
 | 9 | **Scope creep** (a whole plane of guests). | Chapter 0 uses three characters and anonymous sleepers only. |
-| 10 | **Repository**: the integration could not create the new GitHub repository. | Built as a standalone local repo; delivered as a git bundle until a repo exists. |
+| 10 | **Repository** separation from Kalibrierungsanlage III. | Own repository (`Team-Aperture/mega-mysterious-murder-of-r3mi`); KA-III is never touched. |

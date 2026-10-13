@@ -11,7 +11,7 @@ All three share the same fixed rules:
   trench-coat-and-gadget-arms, no cartoon dog, no hat brim covering the face.
 
 All three are built on **the same skeleton** in this prototype. They can be compared side by side, walking
-and idling, in the **Animation Lab** (*Animationslabor → Modellblatt*). You can also play the whole chapter
+and idling, in the **Animation Lab** (*Animationslabor → Aufstellung* for the lineup, *Clips* with Figur „ICH · B" or „ICH · C" for single clips). You can also play the whole chapter
 with any of them (*Einstellungen → ICH-Entwurf*). Direction A is the default.
 
 | | A · „Das Namensschild" | B · „Der Aktenschrank" | C · „Das Periskop" |

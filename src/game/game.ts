@@ -162,6 +162,7 @@ export class Game {
     this.audio.apply();
     this.dialogue.settings = { speed: s.textSpeed, vtgmGerman: s.vtgmGerman, reduced: s.reducedMotion };
     document.body.classList.toggle('reduced', s.reducedMotion);
+    this.cam.calm = s.reducedMotion;
     saveSettings(s);
   }
 

@@ -1,4 +1,14 @@
 import { Application } from 'pixi.js';
+// Register the render pipes this game uses before the renderer is created. In the dev server
+// Pixi's own side-effect imports run in order; in a production bundle they can be split into
+// later chunks and run after app.init(), leaving the renderer without the graphics, text and
+// mesh pipes ("reading 'validateRenderable'" on the first frame). Importing them here, ahead of
+// init, makes the build behave like the dev server.
+import 'pixi.js/graphics';
+import 'pixi.js/text';
+import 'pixi.js/mesh';
+import 'pixi.js/filters';
+import 'pixi.js/events';
 
 /** One Pixi application for the whole game; scenes swap containers on its stage. */
 export async function createStage(host: HTMLElement): Promise<Application> {

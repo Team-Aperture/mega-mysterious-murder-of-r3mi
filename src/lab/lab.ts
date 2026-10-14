@@ -429,14 +429,15 @@ class Lab {
       label.position.set(-w / 2 + 6, -u - 28);
       this.chart.addChild(label);
     }
-    for (const a of this.lineup) {
+    this.lineup.forEach((a, i) => {
       const top = a.headTop();
       gfx.moveTo(a.x - 150, top.y).lineTo(a.x + 150, top.y).stroke({ color: 0xffb22e, width: 3 });
-      const name = new Text({ text: `${a.spec.name}\n${(-top.y / UNITS_PER_M).toFixed(2).replace('.', ',')} m`, style: { fontFamily: 'Nunito', fontWeight: '900', fontSize: 30, fill: 0xf4eedc, align: 'center', lineHeight: 34 } });
+      // the three ICH design directions share a name: label them by direction (ICH · A/B/C)
+      const name = new Text({ text: `${this.casts[i]?.label ?? a.spec.name}\n${(-top.y / UNITS_PER_M).toFixed(2).replace('.', ',')} m`, style: { fontFamily: 'Nunito', fontWeight: '900', fontSize: 30, fill: 0xf4eedc, align: 'center', lineHeight: 34 } });
       name.anchor.set(0.5, 0);
       name.position.set(a.x, 30);
       this.names.addChild(name);
-    }
+    });
   }
 
   /* ------------------------------------------------------------------ scenes */

@@ -217,6 +217,12 @@ export class Actor {
     return { x: this.x + p.x * s * this.facingScale(), y: this.y + p.y * s };
   }
 
+  /** Rest pivot of a bone in sheet space (where the drawing has it). */
+  rest(bone: string): [number, number] {
+    const b = this.sk.def.bones[this.sk.bone(bone)];
+    return [b.x, b.y];
+  }
+
   /** Top of the head in world space (for speech bubbles), wherever the head actually is. */
   headTop(): { x: number; y: number } {
     return this.worldPoint(this.spec.headBone, this.spec.headTop[0], this.spec.headTop[1]);

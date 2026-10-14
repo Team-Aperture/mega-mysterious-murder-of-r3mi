@@ -243,8 +243,10 @@ export const AVALANCHE: S = {
     at(5.6, (g) => {
       // a single pillow, onto the hat
       const ich = g.cast.ich;
-      const p = g.spawnProp('pillow', ich.x + 20, -740, 61);
-      g.toss({ s: p, x0: ich.x + 20, y0: -740, x1: ich.x + 6, y1: -686, arc: 10, dur: 0.35, spin: 0.25, bounce: 6, sound: 'pop' });
+      // lands on top of his hat, whichever ICH design is active
+      const top = ich.headTop().y + 2;
+      const p = g.spawnProp('pillow', ich.x + 20, top - 54, 61);
+      g.toss({ s: p, x0: ich.x + 20, y0: top - 54, x1: ich.x + 6, y1: top, arc: 10, dur: 0.35, spin: 0.25, bounce: 6, sound: 'pop' });
       (g as unknown as { _pillow: unknown })._pillow = p;
     }, 'Ein Kissen'),
     at(6.6, (g) => g.line('ich', '… Ein Kissen.', { style: 'whisper', auto: 0.7 })),
@@ -276,7 +278,8 @@ export const AVALANCHE: S = {
       const out: [string, number, number][] = [['_lug0', -170, -30], ['_lug1', 200, -40], ['_lug2', -280, -30], ['_lug3', 110, -20]];
       out.forEach(([k, dx, y], i) => { const sp = L[k]; sp.zIndex = 45; g.toss({ s: sp, x0: sp.x, y0: sp.y, x1: ich.x + dx, y1: y, arc: 90 + i * 20, dur: 0.55, spin: dx > 0 ? 1.5 : -1.5, bounce: 10, sound: 'thud' }); });
       const tb = L._lug4;
-      g.tween(tb, { x: ich.x, y: -560 }, 0.25, 'quadOut').then(() => g.attach(tb, ich, 'hand.near', 64, -214));
+      const [wx, wy] = ich.rest('hand.near');
+      g.tween(tb, { x: ich.x, y: -560 }, 0.25, 'quadOut').then(() => g.attach(tb, ich, 'hand.near', wx + 2, wy + 48));
     }, 'Er taucht auf, mit Fund'),
     at(16.6, (g) => g.line('ich', 'Ein Travel Bug. Er reist um die Welt, von Hand zu Hand.', { auto: 0.8 })),
     at(20.0, (g) => g.line('ich', 'Genau wie wir.', { auto: 0.6 })),
@@ -310,7 +313,8 @@ export const TRIP: S = {
     at(0.58, (g) => {
       const ich = g.cast.ich;
       const hp = ich.worldPoint('hat');
-      const hat = g.spawnPart(ich, 'hat', 62, -628, hp.x, hp.y, 52);
+      const [hx, hy] = ich.rest('hat');
+      const hat = g.spawnPart(ich, 'hat', hx, hy, hp.x, hp.y, 52);
       (g as unknown as { _hat: unknown })._hat = hat;
       g.toss({ s: hat, x0: hp.x, y0: hp.y, x1: ich.x + ich.facing * 470, y1: -66, arc: 260, dur: 1.5, spin: ich.facing * 9.5, bounce: 10, sound: 'pop' });
     }, 'Der Hut fliegt'),
@@ -319,7 +323,8 @@ export const TRIP: S = {
       const ich = g.cast.ich;
       const hat = (g as unknown as { _hat: import('pixi.js').Sprite })._hat;
       const end = ich.x + ich.facing * 300;
-      g.tween(hat, { x: end + ich.facing * 48, y: -628 - 12, rotation: 0 }, 0.6, 'sineInOut').then(() => hat.destroy());
+      const [hx, hy] = ich.rest('hat');
+      g.tween(hat, { x: end + ich.facing * (hx - 14) * ich.scale, y: (hy - 12) * ich.scale, rotation: 0 }, 0.6, 'sineInOut').then(() => hat.destroy());
     }, 'Hut zurück'),
     at(5.6, (g) => {
       const ich = g.cast.ich;

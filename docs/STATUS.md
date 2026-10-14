@@ -54,9 +54,11 @@ In short:
   fluid hose from the tank. Tank high and leaning back, exactly three hoses. Checked against the reference by
   independent reviewers; recorded in the character bible as a rule that must not change.
 - V-TGM was checked the same way and already matched her portrait.
-- Style details that differ from R-3MI's portrait and were left as placeholder decisions: the eye sits slightly
-  higher and rounder than in the portrait, the pelvis is light instead of dark graphite, and the hip caps are
-  simplified.
+- Style and proportion details that still differ from R-3MI's portrait (placeholder decisions, listed by the
+  same review): the eye sits slightly higher and rounder; the pelvis is light instead of dark graphite; the hip
+  caps are simplified; the waist has three fat ribs instead of five thin bars; the legs stand closer together
+  than the portrait's A-stance; the torso is a little long (the legs a little short) for the canon proportions.
+  Changing the proportions means re-tuning the gait and the seat clips, so it belongs with the authored redraw.
 - Canon rules kept everywhere: R-3MI speaks German, V-TGM speaks English with a German subtitle, they use each
   other's designations only, R-3MI is "he", V-TGM is "she". The plane is never shown in the air.
 

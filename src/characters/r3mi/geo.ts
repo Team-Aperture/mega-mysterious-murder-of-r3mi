@@ -24,16 +24,16 @@ export const J = {
   neck: [10, -668],
   head: [14, -698],
   // the arms hang in a slight A: the near one angled back under the tank, the far forearm forward
-  shN: [-76, -626], elN: [-110, -480], wrN: [-112, -344],
-  shF: [70, -632], elF: [80, -480], wrF: [100, -348],
+  shN: [-76, -626], elN: [-128, -484], wrN: [-132, -348],
+  shF: [70, -632], elF: [82, -484], wrF: [112, -350],
   tank: [-92, -664],
 } as const;
 
 export const HEAD = { cx: 18, cy: -790, rx: 78, ry: 100 } as const;
 export const EYE = { x: 56, y: -800 } as const;
 /** Glass interior (unrotated) and its lean in degrees (negative = top leans back). */
-// tilt −14 at rest: the idle stoop leans him 4° forward, so the tank reads at the canon ≈10°
-export const TANK = { x: -172, y: -794, w: 60, h: 156, tilt: -14 } as const;
+// tilt −12 at rest: the idle stoop leans him 4° forward, so the tank reads at the canon ≈8–10°
+export const TANK = { x: -167, y: -786, w: 60, h: 150, tilt: -12 } as const;
 /** Centre of the tank glass, the pivot of its lean. */
 export const TANK_C = [TANK.x + TANK.w / 2, TANK.y + TANK.h / 2] as const;
 /** A point given relative to the upright tank, leaned with it (sheet space). */

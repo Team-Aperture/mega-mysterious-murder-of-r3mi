@@ -49,7 +49,7 @@ export const R3MI_RIG: RigDef = {
     { name: 'hand.near', bone: 'hand.near', z: 37 },
     { name: 'elbow.near', bone: 'forearm.near', z: 38 },
     { name: 'shoulder.near', bone: 'upperarm.near', z: 39 },
-    { name: 'cowl', bone: 'torso', z: 39.5 },
+    { name: 'cowl', bone: 'torso', z: 30 },
   ],
 };
 
@@ -123,7 +123,7 @@ export const R3MI: CharacterSpec = {
     // the elbow hose is fluid-filled: translucent green, glowing like the tank
     const fluidHose = { base: '#3dbb55', accent: '#d6ffd9', emissive: true };
     const T = TANK;
-    const top = tankPt(T.x + T.w / 2 - 6, T.y - 34), corner = tankPt(T.x - 2, T.y + T.h + 12);
+    const top = tankPt(T.x + T.w / 2 - 6, T.y - 26), corner = tankPt(T.x - 2, T.y + T.h + 10);
     const at = (bone: string, p: readonly number[], dx = 0, dy = 0) => ({ bone, x: p[0] + dx, y: p[1] + dy });
     // canon: exactly three hoses. Two round hoops over the top: crown → junction behind the head
     // (the taller one) and junction → tank-top socket (in front where they meet) …
@@ -140,7 +140,7 @@ export const R3MI: CharacterSpec = {
     a.features.push(new Led(a, { name: 'chest2', bone: 'torso', z: 29, x: 33, y: -487, w: 10, h: 10, color: 0x7dffae, glow: 0x2ecf62, param: 'chestLed' }));
     // green rings on the big shoulder disk and the elbow of his left arm
     a.features.push(new Led(a, { name: 'shoulder', bone: 'upperarm.near', z: 40, x: J.shN[0] + SH_CAP[0], y: J.shN[1] + SH_CAP[1], w: 36, h: 5.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
-    a.features.push(new Led(a, { name: 'elbow', bone: 'forearm.near', z: 41, x: J.elN[0] - 6, y: J.elN[1] - 2, w: 24, h: 4.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
+    a.features.push(new Led(a, { name: 'elbow', bone: 'forearm.near', z: 41, x: J.elN[0] - 10, y: J.elN[1] - 2, w: 24, h: 4.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
     a.features.push(new Led(a, { name: 'shoulderFar', bone: 'upperarm.far', z: 6.8, x: J.shF[0] + SH_CAP[0], y: J.shF[1] + SH_CAP[1], w: 36, h: 5.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
     a.features.push(new Led(a, { name: 'elbowFar', bone: 'forearm.far', z: 6.9, x: J.elF[0] - 6, y: J.elF[1] - 2, w: 24, h: 4.5, color: 0x5dff9a, glow: 0x2ecf62, param: 'jointLights', ring: true }));
     // the sheet is the canon mirrored (it faces right); facing right, the left arm is the far one

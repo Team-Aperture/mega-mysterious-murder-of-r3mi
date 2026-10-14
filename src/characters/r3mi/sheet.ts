@@ -63,15 +63,17 @@ export function r3miSheet(): string {
   {
     // front lobe rises toward the chin, a U opening shows the neck, the back rises into the cowl
     const shield = smooth([
-      [-26, -676], [16, -648], [78, -684], [94, -650], [92, -606], [80, -550], [60, -500], [48, -474],
-      [22, -470], [-6, -470], [-24, -500], [-40, -560], [-56, -612], [-50, -652],
+      [-26, -676], [16, -648], [72, -684], [82, -652], [78, -606], [68, -552], [56, -500], [46, -474],
+      [22, -470], [-6, -470], [-20, -500], [-26, -560], [-36, -606], [-40, -650],
     ]);
     parts.push(part('torso',
       // his flank shows behind the plate (three-quarter view): dark, ribbed
-      solid(d, 'flank', rr(-82, -606, 60, 132, 16), PAL.limb, [line('M-76 -566H-30M-76 -540H-30M-76 -514H-30', PAL.limbHi, 3)]) +
+      solid(d, 'flank', rr(-82, -606, 60, 132, 16), PAL.limb, [line('M-76 -566H-30M-76 -540H-30M-76 -514H-30', PAL.limbHi, 3),
+        // green rim light from the tank on his back flank (canon): thin lines, not a hose
+        line('M-86 -578Q-62 -548 -40 -516M-76 -588Q-52 -556 -30 -524', '#b9ff7a', 3, 0.85)]) +
       solid(d, 'shield', shield, PAL.shade, [
-        fillOnly(ellipse(30, -596, 70, 104), PAL.shell),
-        fillOnly(smooth([[48, -668], [80, -664], [84, -620], [62, -634]]), '#ffffff', 0.55),
+        fillOnly(ellipse(26, -596, 60, 104), PAL.shell),
+        fillOnly(smooth([[42, -668], [70, -664], [74, -622], [54, -634]]), '#ffffff', 0.55),
         // body centre line: from the neck opening straight down to the top of the slot
         line('M24 -650C30 -612 34 -580 35 -534', PAL.shade2, 2.5),
         fillOnly(ellipse(-14, -486, 30, 12), PAL.shade2, 0.45),
@@ -83,7 +85,7 @@ export function r3miSheet(): string {
     // the white cowl of the chest plate arcs over the big near shoulder disk (in front of it);
     // a tighter one fits the plain shoulder (used while he faces right, see Handedness)
     const cowlPart = (id: string, ri: number, ro: number, alt: boolean) => {
-      const S = J.shN, a0 = (-24 * Math.PI) / 180, a1 = (-150 * Math.PI) / 180;
+      const S = [J.shN[0] + 10, J.shN[1]], a0 = (-20 * Math.PI) / 180, a1 = (-104 * Math.PI) / 180;
       const pt = (r: number, a: number) => `${S[0] + r * Math.cos(a)} ${S[1] + r * Math.sin(a)}`;
       // the front end flares down into the chest plate so the two read as one piece of armour
       const d0 = `M${pt(ro, a0)}A${ro} ${ro} 0 0 0 ${pt(ro, a1)}L${pt(ri, a1)}A${ri} ${ri} 0 0 1 ${pt(ri, a0)}` +
@@ -95,8 +97,8 @@ export function r3miSheet(): string {
         ]),
         alt ? { 'data-bone': 'torso', 'data-alt': 1 } : { 'data-bone': 'torso' }));
     };
-    cowlPart('cowl', 44, 72, false);
-    cowlPart('cowl#plain', 28, 52, true);
+    cowlPart('cowl', 52, 70, false);
+    cowlPart('cowl#plain', 34, 51, true);
   }
 
   /* ---------------------------------------------------------------- waist */
@@ -181,7 +183,7 @@ export function r3miSheet(): string {
       ]) +
       line(`M${S[0] - 18} ${S[1] + 56}h36M${S[0] - 17} ${S[1] + 106}h35`, c(PAL.limbHi2), 3),
       { 'data-bone': `upperarm.${side}` }));
-    const elbowRinged = path(circle(E[0], E[1], 25), c(PAL.limb)) + path(circle(E[0] - 6, E[1] - 2, 15), c(PAL.limbHi), { sw: 3 });
+    const elbowRinged = path(circle(E[0], E[1], 25), c(PAL.limb)) + path(circle(E[0] - 10, E[1] - 2, 15), c(PAL.limbHi), { sw: 3 });
     const elbowPlain = path(circle(E[0] - 11, E[1], 14), c(PAL.limb)) + path(circle(E[0] + 11, E[1], 14), c(PAL.limb)) +
       fillOnly(circle(E[0] - 14, E[1] - 4, 4), c(PAL.limbHi2)) + fillOnly(circle(E[0] + 8, E[1] - 4, 4), c(PAL.limbHi2));
     parts.push(part(`elbow.${side}`, side === 'near' ? elbowRinged : elbowPlain, { 'data-bone': `forearm.${side}` }));
@@ -227,8 +229,8 @@ export function r3miSheet(): string {
   {
     const T = TANK;
     const lean = (inner: string) => `<g transform="rotate(${T.tilt} ${TANK_C[0]} ${TANK_C[1]})">${inner}</g>`;
-    const [bx, by] = tankPt(T.x - 2, T.y + T.h + 12);
-    const [tx, ty] = tankPt(T.x + T.w / 2 - 6, T.y - 28);
+    const [bx, by] = tankPt(T.x - 2, T.y + T.h + 10);
+    const [tx, ty] = tankPt(T.x + T.w / 2 - 6, T.y - 20);
     parts.push(part('tank.back',
       // mount (all behind the head): a strut from the yoke to a box at neck level that clamps
       // the glass, and a tube from the box up to the junction where the two upper hoses meet
@@ -245,8 +247,8 @@ export function r3miSheet(): string {
         fillOnly(rr(T.x + T.w - 21, T.y + 12, 11, T.h - 24, 5.5), '#ffffff', 0.34) +
         fillOnly(rr(T.x + 4, T.y + 16, 4, T.h - 34, 2), '#b9ff7a', 0.5) +
         `<path d="${rr(T.x - 3, T.y, T.w + 6, T.h, 16)}" fill="none" stroke="${EDGE}" stroke-width="4"/>` +
-        solid(d, 'cap-top', rr(T.x - 10, T.y - 22, T.w + 20, 32, 11), PAL.limb, [fillOnly(rr(T.x - 4, T.y - 17, T.w + 8, 6, 3), PAL.limbHi2)]) +
-        solid(d, 'cap-bot', rr(T.x - 10, T.y + T.h - 10, T.w + 20, 32, 11), PAL.limb, [fillOnly(rr(T.x - 4, T.y + T.h - 5, T.w + 8, 6, 3), PAL.limbHi2)])) +
+        solid(d, 'cap-top', rr(T.x - 8, T.y - 14, T.w + 16, 24, 9), PAL.limb, [fillOnly(rr(T.x - 3, T.y - 10, T.w + 6, 5, 2.5), PAL.limbHi2)]) +
+        solid(d, 'cap-bot', rr(T.x - 8, T.y + T.h - 10, T.w + 16, 22, 9), PAL.limb, [fillOnly(rr(T.x - 3, T.y + T.h - 6, T.w + 6, 5, 2.5), PAL.limbHi2)])) +
       // hose sockets: on top slightly behind the centre, and at the back-bottom corner
       path(rr(tx - 10, ty - 10, 20, 18, 5), PAL.limbHi, { sw: 3.5 }) +
       path(circle(bx, by, 10), PAL.limbHi, { sw: 3.5 }),

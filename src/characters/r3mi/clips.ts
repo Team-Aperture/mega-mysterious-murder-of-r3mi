@@ -12,13 +12,13 @@ const idle: ClipDef = {
   tracks: {
     'torso.r': [{ t: 0, v: 4, e: 'sineInOut' }, { t: 1, v: 3.2, e: 'sineInOut' }, { t: 2, v: 4.2, e: 'sineInOut' }, { t: 3, v: 4.8, e: 'sineInOut' }],
     'torso.sy': [{ t: 0, v: 1, e: 'sineInOut' }, { t: 1.1, v: 1.014, e: 'sineInOut' }, { t: 2, v: 1, e: 'sineInOut' }, { t: 3.1, v: 1.012, e: 'sineInOut' }],
-    'neck.r': [{ t: 0, v: 5, e: 'sineInOut' }, { t: 2.2, v: 6.5, e: 'sineInOut' }],
-    'head.r': [{ t: 0.2, v: 3, e: 'sineInOut' }, { t: 1.3, v: 0.5, e: 'sineInOut' }, { t: 2.4, v: 3.5, e: 'sineInOut' }, { t: 3.4, v: 1.5, e: 'sineInOut' }],
+    'neck.r': [{ t: 0, v: 3, e: 'sineInOut' }, { t: 2.2, v: 4.5, e: 'sineInOut' }],
+    'head.r': [{ t: 0.2, v: 1.5, e: 'sineInOut' }, { t: 1.3, v: 0, e: 'sineInOut' }, { t: 2.4, v: 2, e: 'sineInOut' }, { t: 3.4, v: 0.5, e: 'sineInOut' }],
     'pelvis.x': [{ t: 0, v: -2, e: 'sineInOut' }, { t: 2, v: 3, e: 'sineInOut' }],
     'pelvis.y': [{ t: 0, v: 0, e: 'sineInOut' }, { t: 1, v: 2.5, e: 'sineInOut' }, { t: 2, v: 0, e: 'sineInOut' }, { t: 3, v: 2, e: 'sineInOut' }],
     'upperarm.near.r': [{ t: 0.3, v: -2, e: 'sineInOut' }, { t: 2.3, v: 1, e: 'sineInOut' }],
     'upperarm.far.r': [{ t: 0.6, v: 2, e: 'sineInOut' }, { t: 2.6, v: -1, e: 'sineInOut' }],
-    'forearm.near.r': [{ t: 0.4, v: -7, e: 'sineInOut' }, { t: 2.4, v: -4, e: 'sineInOut' }],
+    'forearm.near.r': [{ t: 0.4, v: -3, e: 'sineInOut' }, { t: 2.4, v: -1, e: 'sineInOut' }],
     'forearm.far.r': [{ t: 0.8, v: -5, e: 'sineInOut' }, { t: 2.8, v: -8, e: 'sineInOut' }],
     'hand.near.r': [{ t: 0.5, v: 4, e: 'sineInOut' }, { t: 2.5, v: -2, e: 'sineInOut' }],
   },
@@ -28,15 +28,15 @@ const idle: ClipDef = {
  *  (Angles solved for the 3/4 rig: the near arm reaches forward from the back, the far arm
  *  folds up at the front edge.) */
 const fidget: ClipDef = blocked('fidget', 2.4, [
-  [0, { 'torso.r': 6, 'neck.r': 6, 'head.r': 6, 'upperarm.near.r': -46, 'forearm.near.r': -80, 'hand.near.r': -18, 'upperarm.far.r': 12, 'forearm.far.r': -138, 'hand.far.r': -10, 'pelvis.y': 4 }, 'sineInOut'],
-  [0.3, { 'forearm.near.r': -86, 'forearm.far.r': -132, 'head.r': 8 }, 'quadOut'],
-  [0.5, { 'forearm.near.r': -80, 'forearm.far.r': -138 }, 'quadOut'],
-  [0.7, { 'forearm.near.r': -86, 'forearm.far.r': -132 }, 'quadOut'],
-  [0.9, { 'forearm.near.r': -80, 'forearm.far.r': -138, 'head.r': 4 }, 'sineInOut'],
-  [1.5, { 'forearm.near.r': -86, 'forearm.far.r': -132, 'head.r': 9 }, 'quadOut'],
-  [1.7, { 'forearm.near.r': -80, 'forearm.far.r': -138 }, 'quadOut'],
-  [1.9, { 'forearm.near.r': -86, 'forearm.far.r': -132 }, 'quadOut'],
-  [2.4, { 'forearm.near.r': -80, 'forearm.far.r': -138, 'head.r': 6 }, 'sineInOut'],
+  [0, { 'torso.r': 6, 'neck.r': 6, 'head.r': 6, 'upperarm.near.r': -54, 'forearm.near.r': -74, 'hand.near.r': -18, 'upperarm.far.r': 18, 'forearm.far.r': -140, 'hand.far.r': -10, 'pelvis.y': 4 }, 'sineInOut'],
+  [0.3, { 'upperarm.near.r': -50, 'forearm.near.r': -78, 'upperarm.far.r': 16, 'forearm.far.r': -136, 'head.r': 8 }, 'quadOut'],
+  [0.5, { 'upperarm.near.r': -54, 'forearm.near.r': -74, 'upperarm.far.r': 18, 'forearm.far.r': -140 }, 'quadOut'],
+  [0.7, { 'upperarm.near.r': -50, 'forearm.near.r': -78, 'upperarm.far.r': 16, 'forearm.far.r': -136 }, 'quadOut'],
+  [0.9, { 'upperarm.near.r': -54, 'forearm.near.r': -74, 'upperarm.far.r': 18, 'forearm.far.r': -140, 'head.r': 4 }, 'sineInOut'],
+  [1.5, { 'upperarm.near.r': -50, 'forearm.near.r': -78, 'upperarm.far.r': 16, 'forearm.far.r': -136, 'head.r': 9 }, 'quadOut'],
+  [1.7, { 'upperarm.near.r': -54, 'forearm.near.r': -74, 'upperarm.far.r': 18, 'forearm.far.r': -140 }, 'quadOut'],
+  [1.9, { 'upperarm.near.r': -50, 'forearm.near.r': -78, 'upperarm.far.r': 16, 'forearm.far.r': -136 }, 'quadOut'],
+  [2.4, { 'upperarm.near.r': -54, 'forearm.near.r': -74, 'upperarm.far.r': 18, 'forearm.far.r': -140, 'head.r': 6 }, 'sineInOut'],
 ], { loop: true });
 
 /** „Hiii!": up on the toes, big open-hand wave. */
@@ -220,11 +220,11 @@ const deepSleep: ClipDef = {
  *  one swings up into it (contact solved for the 3/4 rig at about x 170, y −560). */
 const clap: ClipDef = blocked('clap', 1.8, [
   [0, { 'upperarm.near.r': 0, 'forearm.near.r': -6, 'upperarm.far.r': 0, 'forearm.far.r': -6 }, 'sineInOut'],
-  [0.35, { 'upperarm.near.r': -44, 'forearm.near.r': -46, 'upperarm.far.r': 14, 'forearm.far.r': -126 }, 'sineInOut'],
-  [0.6, { 'upperarm.near.r': -50, 'forearm.near.r': -60 }, 'quadIn'],
-  [0.68, { 'upperarm.near.r': -44, 'forearm.near.r': -46 }, 'sineInOut'],
-  [1.1, { 'upperarm.near.r': -50, 'forearm.near.r': -60 }, 'quadIn'],
-  [1.18, { 'upperarm.near.r': -44, 'forearm.near.r': -46 }, 'sineInOut'],
+  [0.35, { 'upperarm.near.r': -48, 'forearm.near.r': -50, 'upperarm.far.r': 18, 'forearm.far.r': -124 }, 'sineInOut'],
+  [0.6, { 'upperarm.near.r': -56, 'forearm.near.r': -56 }, 'quadIn'],
+  [0.68, { 'upperarm.near.r': -48, 'forearm.near.r': -50 }, 'sineInOut'],
+  [1.1, { 'upperarm.near.r': -56, 'forearm.near.r': -56 }, 'quadIn'],
+  [1.18, { 'upperarm.near.r': -48, 'forearm.near.r': -50 }, 'sineInOut'],
   [1.8, { 'upperarm.near.r': 0, 'forearm.near.r': -6, 'upperarm.far.r': 0, 'forearm.far.r': -6 }],
 ], { events: [{ t: 0.6, name: 'sfx', data: 'clap' }, { t: 1.1, name: 'sfx', data: 'clap' }] });
 

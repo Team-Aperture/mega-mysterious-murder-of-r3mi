@@ -35,7 +35,7 @@ Legend: ✅ real (the system is done and meant to stay) · 🟡 placeholder (wor
 | **All character motion** | Clips are pose-to-pose keyframes typed in code, plus procedural gait and springs. Timing reads, but there are no smears, no drawn squash frames and no hand-keyed overlap. **This is not the final hand-drawn animation quality.** |
 | Cabin, props, close-up drawings | Procedural vector art: clean, but without texture and storytelling detail |
 | Sound effects, babble voices, music | Synthesised sketches |
-| ICH's design | Direction A is complete; B and C are being built on the same skeleton (until they land, choosing them shows A). None is final |
+| ICH's design | Three directions on one skeleton: A „Das Namensschild" (default), B „Der Aktenschrank", C „Das Periskop". B and C are first versions under review. None is final |
 | Sleeping passengers | Anonymous blanket shapes on purpose (see open questions) |
 
 ## 3. Needs authored assets 🎨
@@ -64,8 +64,8 @@ In short:
 
 ## 5. Open questions ❓
 
-1. **ICH: A, B or C?** All three are selectable (*Einstellungen → ICH-Entwurf*) and shown in the Lab
-   (*Aufstellung*); B and C are still being drawn. Recommendation: A (see [ICH_DESIGN_DIRECTIONS.md](ICH_DESIGN_DIRECTIONS.md)).
+1. **ICH: A, B or C?** All three are playable through the whole chapter (*Einstellungen → ICH-Entwurf*) and
+   compared side by side in the Lab (*Aufstellung*). Recommendation: A (see [ICH_DESIGN_DIRECTIONS.md](ICH_DESIGN_DIRECTIONS.md)).
 2. **ICH's handedness.** ICH has no canon art yet. His near arm currently hangs at the front edge of his body
    (the magnifier hand). Once a design is chosen, its asymmetric details should be fixed in a model sheet.
 3. **V-TGM's language.** Canon says English; the brief asks for German dialogue. The prototype follows canon

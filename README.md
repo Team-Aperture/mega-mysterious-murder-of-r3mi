@@ -14,6 +14,21 @@ It is a separate project from Kalibrierungsanlage III and shares no code with it
 > **Status:** prototype. The systems are real; the character art and motion are procedural
 > placeholders, not final hand-drawn quality. See [docs/STATUS.md](docs/STATUS.md).
 
+| | |
+| --- | --- |
+| ![Title](docs/screenshots/01-title.jpg) | ![Opening](docs/screenshots/02-opening.jpg) |
+| Title: the departure board never says "departed" | Opening: Flight 303 at night |
+| ![ICH's entrance](docs/screenshots/03-entrance.jpg) | ![Seat struggle](docs/screenshots/04-seat-struggle.jpg) |
+| ICH's entrance from the lavatory | R-3MI against seat 14C |
+| ![Asleep](docs/screenshots/05-asleep.jpg) | ![Trip](docs/screenshots/07-trip.jpg) |
+| "Good night, R-3MI." | ICH meets R-3MI's legs in the aisle |
+| ![Investigation](docs/screenshots/08-investigation.jpg) | ![Avalanche](docs/screenshots/06-avalanche.jpg) |
+| Investigating with the magnifier | The overhead bin: a find |
+| ![Animation Lab](docs/screenshots/09-lab-clips.jpg) | ![Lineup](docs/screenshots/10-lab-lineup.jpg) |
+| Animation Lab: skeleton, pivots and onion skin on the walk | Lineup with the three ICH design directions |
+
+*Screenshots are re-simulated game frames (software-rendered), placeholder art.*
+
 ## Run it
 
 ```bash

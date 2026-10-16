@@ -378,29 +378,36 @@ export class Game {
     for (let i = this.tosses.length - 1; i >= 0; i--) if (this.tosses[i].landed && this.tosses[i].bounce <= 0) this.tosses.splice(i, 1);
   }
 
-  /** Tweens numeric properties of any object (actor.x, actor.y, a sprite's alpha…). */
-  tween<T extends object>(obj: T, to: Partial<Record<keyof T, number>>, dur: number, e: EaseSpec = 'sineInOut'): Promise<void> {
+  /**
+   * Tweens numeric properties of any object (actor.x, actor.y, a sprite's alpha…).
+   * `onDone` runs synchronously inside the step that finishes the tween; cutscenes must use it
+   * rather than the returned promise, whose callbacks run only after a synchronous seek or skip.
+   */
+  tween<T extends object>(obj: T, to: Partial<Record<keyof T, number>>, dur: number, e: EaseSpec = 'sineInOut', onDone?: () => void): Promise<void> {
     const o = obj as unknown as Record<string, number>;
     const keys = Object.keys(to);
     return new Promise((resolve) => {
       let left = keys.length;
-      if (!left) { resolve(); return; }
+      if (!left) { onDone?.(); resolve(); return; }
       for (const k of keys) {
         // a new tween on the same property replaces the old one
         for (let i = this.tweens.length - 1; i >= 0; i--) if (this.tweens[i].o === o && this.tweens[i].k === k) this.tweens.splice(i, 1);
-        this.tweens.push({ o, k, from: o[k], to: (to as Record<string, number>)[k], t: 0, dur: Math.max(1e-4, dur), e, done: () => { if (--left === 0) resolve(); } });
+        this.tweens.push({ o, k, from: o[k], to: (to as Record<string, number>)[k], t: 0, dur: Math.max(1e-4, dur), e, done: () => { if (--left === 0) { onDone?.(); resolve(); } } });
       }
     });
   }
 
   private stepTweens(dt: number): void {
+    const finished: (() => void)[] = [];
     for (let i = this.tweens.length - 1; i >= 0; i--) {
       const tw = this.tweens[i];
       tw.t += dt;
       const k = clamp(tw.t / tw.dur);
       tw.o[tw.k] = tw.from + (tw.to - tw.from) * ease(tw.e)(k);
-      if (k >= 1) { this.tweens.splice(i, 1); tw.done?.(); }
+      if (k >= 1) { this.tweens.splice(i, 1); if (tw.done) finished.push(tw.done); }
     }
+    // after the loop: a completion may start new tweens
+    for (const f of finished) f();
   }
 
   /* ------------------------------------------------------------------ actor events → sound */

@@ -17,7 +17,7 @@ Legend: ✅ real (the system is done and meant to stay) · 🟡 placeholder (wor
 | Live vector features | Projected single eyes with lids, saccades, blinks and expression shapes; V-TGM's sphere projection; ICH's letters as a never-mirrored vector layer; LEDs |
 | Handedness | Asymmetric details stay on the correct limb when a character turns (used for R-3MI's left arm) |
 | Asset pipeline | One SVG rig sheet per character → per-device atlas; an artist's sheet in `art/authored/<id>.svg` replaces the generated one without code changes; the Lab exports the current sheet |
-| Cutscenes | Deterministic sequences (setup + timed events): skip lands in the exact end state, the Lab scrubs them, a test checks that a frame re-simulates pixel-identically |
+| Cutscenes | Deterministic sequences (setup + timed events): skip lands in the exact end state, the Lab scrubs them, a test checks that a frame re-simulates pixel-identically; chained clips and prop hand-offs complete inside the simulation step (`onEnd`, `onDone`), so seeking matches playback |
 | Game loop | Fixed 1/30 s substeps and game-clock waits: slow devices keep real-time pace instead of slowing down |
 | Cabin and camera | Parallax cabin, night lighting with reading lights, actor tinting by local light, camera with follow, lead, framing and scripted moves |
 | Dialogue | Typewriter timing with emphasis, speech bubbles anchored to heads (side placement for tall speakers), captain announcements, choices that cannot be mis-tapped, V-TGM in English with German subtitles (setting: German only) |
@@ -35,7 +35,7 @@ Legend: ✅ real (the system is done and meant to stay) · 🟡 placeholder (wor
 | **All character motion** | Clips are pose-to-pose keyframes typed in code, plus procedural gait and springs. Timing reads, but there are no smears, no drawn squash frames and no hand-keyed overlap. **This is not the final hand-drawn animation quality.** |
 | Cabin, props, close-up drawings | Procedural vector art: clean, but without texture and storytelling detail |
 | Sound effects, babble voices, music | Synthesised sketches |
-| ICH's design | Three directions on one skeleton: A „Das Namensschild" (default), B „Der Aktenschrank", C „Das Periskop". B and C are first versions under review. None is final |
+| ICH's design | Three directions on one skeleton: A „Das Namensschild" (default), B „Der Aktenschrank", C „Das Periskop". All three play the whole chapter (tested end to end). None is final |
 | Sleeping passengers | Anonymous blanket shapes on purpose (see open questions) |
 
 ## 3. Needs authored assets 🎨
@@ -76,6 +76,13 @@ In short:
 5. **Voice and music direction** for the real production.
 
 ## 6. Known limitations
+
+- **ICH B and C use A's clips.** They share the skeleton and every clip, so a few poses were authored for
+  A's body: in *nervous*, *brushOff* and *sit* the near glove floats in front of the body (A too); B's far arm
+  is mostly hidden behind the wide cabinet; C's telescope pushes the plate into the overhead-bin band during
+  *reachUp*; the entrance gag where the coat tail catches in the lavatory door is staged for A's coat, so B's
+  folder tabs and C's cape are not caught. Per-design clip overrides are supported (a variant can replace a
+  clip by name) once a direction is chosen.
 
 - Software-rendered headless browsers run the game well below 60 fps; the fixed-step loop keeps game time
   correct but the end-to-end tests take a few minutes.

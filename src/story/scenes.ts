@@ -139,7 +139,7 @@ export function seatedState(g: Game): void {
 const seatVtgm = (g: Game) => {
   const v = g.cast.vtgm;
   v.root.zIndex = 25; v.face(-1, true); v.x = SEATS.vtgm.x; v.y = SEATS.vtgm.y;
-  void v.play('sitDown', { fade: 0.05 }).then(() => void v.play('sitDangle', { fade: 0.2 }));
+  void v.play('sitDown', { fade: 0.05, onEnd: () => void v.play('sitDangle', { fade: 0.2 }) });
 };
 
 export const SEAT_STRUGGLE: S = {
@@ -186,7 +186,7 @@ export const SEAT_STRUGGLE: S = {
     at(21.4, (g) => g.line('r3mi', 'Sehr. Ich wohne jetzt hier.', { mood: 'annoyed', auto: 0.8 })),
     // the recline
     at(24.4, (g) => g.line('vtgm', 'Then you won\u2019t mind.', { sub: 'Dann stört dich das ja nicht.', auto: 0.6 })),
-    at(26.2, (g) => void g.cast.vtgm.play('reclineReach', { fade: 0.15 }).then(() => void g.cast.vtgm.play('sitDangle', { fade: 0.25 })), 'Sie drückt den Lehnenknopf'),
+    at(26.2, (g) => void g.cast.vtgm.play('reclineReach', { fade: 0.15, onEnd: () => void g.cast.vtgm.play('sitDangle', { fade: 0.25 }) }), 'Sie drückt den Lehnenknopf'),
     at(26.8, (g) => { g.audio.sfx('creak'); void g.tween({ get r() { return 0; }, set r(v: number) { g.cabin.setRecline(13, v); } } as unknown as { r: number }, { r: 14 }, 0.35, 'backOut'); }),
     at(26.95, (g) => { void g.cast.r3mi.play('squished', { fade: 0.08 }); g.cast.r3mi.setExpression('panic'); g.audio.sfx('bonk', { gain: 0.6 }); }, 'R-3MI zerquetscht'),
     at(27.7, (g) => { g.cast.r3mi.setExpression('annoyed'); g.line('vtgm', 'Oops.', { sub: 'Hoppla.', auto: 0.6 }); }),
@@ -202,7 +202,7 @@ export const SEAT_STRUGGLE: S = {
     at(60.6, (g) => { g.cast.vtgm.setExpression('fond'); void g.cast.vtgm.play('lookBack', { layer: 'face' }); }),
     at(61.0, (g) => { g.line('vtgm', 'Good night, R-3MI.', { sub: 'Gute Nacht, R-3MI.', auto: 0.8 }); }, 'Gute Nacht'),
     at(63.0, (g) => g.line('r3mi', 'Gute Nacht, V-TGM.', { auto: 0.7 })),
-    at(64.6, (g) => void g.cast.r3mi.play('sleepSlump', { fade: 0.2 }).then(() => void g.cast.r3mi.play('sleep', { fade: 0.4 })), 'Tiefschlafmodus'),
+    at(64.6, (g) => void g.cast.r3mi.play('sleepSlump', { fade: 0.2, onEnd: () => void g.cast.r3mi.play('sleep', { fade: 0.4 }) }), 'Tiefschlafmodus'),
     at(69.0, (g) => { g.cast.r3mi.setExpression('off'); g.audio.sfx('snore', { gain: 0.6 }); g.cast.vtgm.setExpression('deadpan'); }),
     at(70.6, (g) => { void g.cast.ich.play('chinStroke', { fade: 0.3 }); g.line('ich', 'Interessant.', { auto: 0.8 }); }),
     at(72.4, (g) => { void g.cast.vtgm.play('toCamera', { layer: 'face' }); g.line('vtgm', 'What is?', { sub: 'Was?', auto: 0.6 }); }),
@@ -279,7 +279,7 @@ export const AVALANCHE: S = {
       out.forEach(([k, dx, y], i) => { const sp = L[k]; sp.zIndex = 45; g.toss({ s: sp, x0: sp.x, y0: sp.y, x1: ich.x + dx, y1: y, arc: 90 + i * 20, dur: 0.55, spin: dx > 0 ? 1.5 : -1.5, bounce: 10, sound: 'thud' }); });
       const tb = L._lug4;
       const [wx, wy] = ich.rest('hand.near');
-      g.tween(tb, { x: ich.x, y: -560 }, 0.25, 'quadOut').then(() => g.attach(tb, ich, 'hand.near', wx + 2, wy + 48));
+      void g.tween(tb, { x: ich.x, y: -560 }, 0.25, 'quadOut', () => g.attach(tb, ich, 'hand.near', wx + 2, wy + 48));
     }, 'Er taucht auf, mit Fund'),
     at(16.6, (g) => g.line('ich', 'Ein Travel Bug. Er reist um die Welt, von Hand zu Hand.', { auto: 0.8 })),
     at(20.0, (g) => g.line('ich', 'Genau wie wir.', { auto: 0.6 })),
@@ -324,7 +324,7 @@ export const TRIP: S = {
       const hat = (g as unknown as { _hat: import('pixi.js').Sprite })._hat;
       const end = ich.x + ich.facing * 300;
       const [hx, hy] = ich.rest('hat');
-      g.tween(hat, { x: end + ich.facing * (hx - 14) * ich.scale, y: (hy - 12) * ich.scale, rotation: 0 }, 0.6, 'sineInOut').then(() => hat.destroy());
+      void g.tween(hat, { x: end + ich.facing * (hx - 14) * ich.scale, y: (hy - 12) * ich.scale, rotation: 0 }, 0.6, 'sineInOut', () => hat.destroy());
     }, 'Hut zurück'),
     at(5.6, (g) => {
       const ich = g.cast.ich;
@@ -351,10 +351,10 @@ export const ENDING: S = {
       const ich = g.cast.ich;
       ich.face(-1); ich.root.zIndex = 25;
       void g.tween(ich, { x: SEATS.ich.x, y: SEATS.ich.y }, 0.4);
-      void ich.play('sitDown', { fade: 0.1 }).then(() => void ich.play('sit', { fade: 0.2 }));
+      void ich.play('sitDown', { fade: 0.1, onEnd: () => void ich.play('sit', { fade: 0.2 }) });
     }),
     at(10.0, (g) => g.line('ich', 'Ein Detektiv schläft nie.', { mood: 'proud', auto: 0.8 })),
-    at(12.6, (g) => { const ich = g.cast.ich; ich.setExpression('neutral'); void ich.play('doze', { fade: 0.2 }).then(() => void ich.play('dozing', { fade: 0.3 })); }, 'Hut über die Platte'),
+    at(12.6, (g) => { const ich = g.cast.ich; ich.setExpression('neutral'); void ich.play('doze', { fade: 0.2, onEnd: () => void ich.play('dozing', { fade: 0.3 }) }); }, 'Hut über die Platte'),
     at(13.2, (g) => { void g.tween(g.cabin, { nightLevel: 0.22 }, 3.2, 'sineInOut'); g.audio.ambience(true, 0.6); }, 'Licht aus'),
     at(16.4, (g) => void g.card('SPÄTER.', '', { ms: 2000 }), 'SPÄTER.'),
     at(17.0, (g) => void g.cam.moveTo(-160, -460, 1.3, 3.5, 'sineInOut')),
@@ -362,7 +362,7 @@ export const ENDING: S = {
       // a shadow passes in the foreground. Whose? (Not answered in Chapter 0.)
       const sh = g.shadowFigure();
       sh.position.set(-200 * 1.3 + 900, 180);
-      void g.tween(sh, { x: -200 * 1.3 - 1000 }, 3.4, 'linear').then(() => sh.destroy());
+      void g.tween(sh, { x: -200 * 1.3 - 1000 }, 3.4, 'linear', () => sh.destroy());
     }, 'Ein Schatten'),
     ...[0, 1, 2, 3, 4, 5].map((i) => at<Game>(21.4 + i * 0.48, (g) => g.audio.sfx('step.vtgm', { gain: 0.25 }))),
     at(24.2, (g) => g.audio.sfx('click', { gain: 1.2 }), 'Klick'),

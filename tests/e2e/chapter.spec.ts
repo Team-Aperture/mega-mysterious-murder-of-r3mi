@@ -5,12 +5,16 @@ import { openGame, state, tap, until, useHotspot, watchErrors } from './helpers'
  * The whole of Chapter 0, as a player would: title, opening, explore, the meeting with a
  * dialogue choice, the seat struggle, three clues, the trip over R-3MI's legs, the ending
  * and the end screen. Desktop clicks or phone taps depending on the project.
+ * ICH_DESIGN=b (or c) plays it with another ICH design direction.
  */
-test('Chapter 0 can be played from the gate to the end screen', async ({ page }) => {
+const design = (process.env.ICH_DESIGN ?? 'a') as 'a' | 'b' | 'c';
+
+test(`Chapter 0 can be played from the gate to the end screen (ICH ${design.toUpperCase()})`, async ({ page }) => {
   test.setTimeout(9 * 60_000);
   const errors = watchErrors(page);
   const vp = page.viewportSize()!;
-  await openGame(page);
+  await openGame(page, design === 'a' ? null : { v: 1, ichDesign: design });
+  expect(await page.evaluate(() => (window as unknown as { __game: { cast: { ich: { id: string } } } }).__game.cast.ich.id)).toBe(design === 'a' ? 'ich' : `ich-${design}`);
   await page.locator('.gate').click();
   await expect(page.locator('.menu.show')).toBeVisible({ timeout: 60_000 });
   await page.locator('.menu .btn').first().click();

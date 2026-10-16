@@ -220,4 +220,35 @@ describe('sequences', () => {
     expect(w.log).toEqual(['a']);
     expect(w.x).toBeCloseTo(1.0);
   });
+  it('clips chained with onEnd are already chained inside a synchronous seek', () => {
+    // a cutscene that plays 'raise' and chains 'hold' when it ends (sitDown → sit, doze → dozing)
+    const sk = new Skeleton(LEG_RIG);
+    const clips = [
+      { name: 'idle', duration: 1, loop: true, tracks: { 'arm.r': [{ t: 0, v: 0 }] } },
+      { name: 'raise', duration: 0.5, tracks: { 'arm.r': [{ t: 0, v: 0 }, { t: 0.5, v: 90 }] } },
+      { name: 'hold', duration: 1, loop: true, tracks: { 'arm.r': [{ t: 0, v: 45 }] } },
+    ];
+    const an = new Animator(sk, clips);
+    const chained: SequenceDef<Animator> = {
+      id: 'c', title: 'Chain', duration: 2,
+      setup: (a) => a.reset('idle'),
+      events: [{ t: 0.2, run: (a) => void a.play('raise', { fade: 0, onEnd: () => void a.play('hold', { fade: 0 }) }) }],
+    };
+    seek(chained, an, () => an.reset('idle'), (dt) => an.update(dt), 1.5);
+    expect(an.current()).toBe('hold'); // a promise .then() would still be pending here
+  });
+  it('onEnd does not fire when another clip replaces the playing one', () => {
+    const sk = new Skeleton(LEG_RIG);
+    const an = new Animator(sk, [
+      { name: 'idle', duration: 1, loop: true, tracks: { 'arm.r': [{ t: 0, v: 0 }] } },
+      { name: 'raise', duration: 0.5, tracks: { 'arm.r': [{ t: 0, v: 90 }] } },
+    ]);
+    an.reset('idle');
+    let fired = 0;
+    void an.play('raise', { fade: 0, onEnd: () => { fired++; } });
+    an.update(0.2);
+    void an.play('idle', { fade: 0 });
+    for (let i = 0; i < 10; i++) an.update(0.1);
+    expect(fired).toBe(0);
+  });
 });

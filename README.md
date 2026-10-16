@@ -56,6 +56,7 @@ The state lives in the URL, so a view can be shared, e.g. `/?lab&mode=clips&c=r3
 ```bash
 npm run check        # typecheck + unit tests + build
 npm run test:e2e     # Playwright: boot, full chapter (desktop + phone), Lab, determinism, ICH designs
+ICH_DESIGN=b npx playwright test chapter --project=desktop   # the whole chapter as ICH design B (or c)
 node scripts/shot.mjs "?dev=pose&c=r3mi&clip=walk&n=6&step=0.15&face=-1" out.png 1400 600
 node scripts/play.mjs out-dir [width] [height] [touch]   # scripted playthrough with screenshots
 ```

@@ -22,6 +22,13 @@ export interface PlayOpts {
   additive?: boolean;
   /** Layer weight (overlays). */
   weight?: number;
+  /**
+   * Called synchronously, inside the update that finishes the clip, when a non-looping clip
+   * reaches its end (not when another clip replaces it). Use this, not the returned promise,
+   * to chain clips in cutscenes: promise callbacks run after a synchronous seek or skip has
+   * finished, so seeked frames would not match playback.
+   */
+  onEnd?: () => void;
 }
 
 interface Track {
@@ -33,6 +40,7 @@ interface Track {
   fadeRate: number;
   done: boolean;
   resolve?: () => void;
+  onEnd?: () => void;
 }
 
 interface Layer {
@@ -76,6 +84,7 @@ export class Animator {
       t.fadeRate = fade > 0 ? 1 / fade : Infinity;
       t.resolve?.();
       t.resolve = undefined;
+      t.onEnd = undefined; // replaced, not finished
     }
     const isBase = layer.name === 'base';
     const track: Track = {
@@ -86,6 +95,7 @@ export class Animator {
       target: opts.weight ?? 1,
       fadeRate: fade > 0 ? 1 / fade : Infinity,
       done: false,
+      onEnd: opts.onEnd,
     };
     layer.tracks.push(track);
     return new Promise<void>((res) => {
@@ -120,6 +130,7 @@ export class Animator {
   }
 
   update(dt: number): void {
+    const ended: (() => void)[] = [];
     for (const l of this.layers) {
       for (const t of l.tracks) {
         const prev = t.time;
@@ -131,6 +142,7 @@ export class Animator {
           const r = t.resolve;
           t.resolve = undefined;
           r?.();
+          if (t.onEnd) { ended.push(t.onEnd); t.onEnd = undefined; }
         }
         if (t.weight !== t.target) {
           const step = t.fadeRate === Infinity ? 1 : dt * t.fadeRate;
@@ -144,6 +156,8 @@ export class Animator {
         for (const t of l.tracks) if (t.done && t.target > 0) { t.target = 0; t.fadeRate = 5; }
       }
     }
+    // after the layer loops, so a chained play() does not modify a list being iterated
+    for (const f of ended) f();
   }
 
   /** Writes all layers into `pose` (which should start at rest). */

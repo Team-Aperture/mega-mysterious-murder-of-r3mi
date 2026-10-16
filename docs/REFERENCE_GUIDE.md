@@ -46,10 +46,13 @@ project is redrawn as layered vector parts (see [ANIMATION_PIPELINE.md](ANIMATIO
 - Torso: bone-white chest shield that narrows toward a dark, ribbed waist (navy ribs), small vertical green
   slot light low on the chest.
 - Big dark shoulder discs, the near one with a green ring light; green-ringed elbow joint.
-- Graphite segmented arms, long; dark articulated hands with long fingers. Fingertips reach mid-thigh.
-- Bone-white pelvis and thigh front plates over graphite; dark knee discs; chunky dark boots.
-- Backpack: a glass cylinder of **green** bubbling liquid with black end caps, two ribbed hoses arching from
-  the tank top to the back of the head, one hose curving down to the hip.
+- Graphite segmented arms, long; dark articulated hands with long fingers. Fingertips reach the knees.
+- Dark graphite pelvis with bone-white hip caps; light front plates on the thighs; dark knee discs; chunky
+  dark boots.
+- Backpack: a glass cylinder of **green** bubbling liquid with black end caps, high on his back and leaning
+  back. Three hoses: a ribbed hoop from a port on the crown to a junction behind the head, a second hoop from
+  there to the tank top, and a bright fluid-filled hose from the tank's bottom that bows out behind his left
+  upper arm into the back of his left elbow (see CHARACTER_BIBLE.md for the handedness).
 
 **V-TGM**: short; the body and head are one **sphere**.
 - Bone-white/warm grey shell with panel seams and visible wear.
@@ -74,9 +77,10 @@ These rules are stated explicitly in the earlier projects and are treated as non
 1. **R-3MI always speaks German. V-TGM always speaks English**, with a German subtitle, whatever the
    interface language (*Liebe auf den ersten Log*, README: "The two units follow Kalibrierungsanlage canon").
    V-TGM only switches to German to annoy R-3MI (KA-II: *„Sie hat gerade Deutsch gesprochen. Das macht sie nur,
-   wenn sie mich ärgern will."*).
+   wenn sie mich ärgern will."*). The game follows this by default; a German-only setting for V-TGM exists
+   for the team to try and is an open question (STATUS.md §5).
 2. The two address each other **only by designation**: R-3MI and V-TGM. No nicknames (*Pausenprotokoll* even
-   validates every spoken line for this; this project does the same, see `src/story/canon.ts`).
+   validates every spoken line for this; this project keeps the rule by hand, there is no automatic check yet).
 3. R-3MI: "delighted about everything", optimistic, chatty, a bit obsessive, proud of small wins,
    restless gaze, fidgets. He breaks things while repairing them and calls it precision
    (*„Ich habe den Fehlerbereich präzisiert."*). Greets with *„Hiii!"*.
@@ -86,7 +90,8 @@ These rules are stated explicitly in the earlier projects and are treated as non
 5. Pronouns used in canon: R-3MI *he* (*"Ignore him."*), V-TGM *she* (*"the one thing about her that panics"*).
 6. Established expression vocabulary for the single optic (`hosts.js`): neutral, happy (arc), curious,
    suspicious (half lid), annoyed (slit), panic (wide + shake), error, proud (star), sad.
-   This project keeps that vocabulary so the eyes act the way players already know.
+   This project keeps that vocabulary for R-3MI so the eyes act the way players already know; V-TGM uses
+   most of it (not *proud* or *error*) plus her own: deadpan, exasperated, amused, alarmed, fond.
 
 ## Guests (not used in Chapter 0)
 

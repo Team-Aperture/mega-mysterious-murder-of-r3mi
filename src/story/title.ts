@@ -76,7 +76,6 @@ export async function startTitle(g: Game, opts: { skipGate?: boolean } = {}): Pr
   await drop(l1, 0.035);
   await wait(0.2);
   await drop(l2, 0.06, 'thud');
-  if (!skipping && !g.settings.reducedMotion) g.cam.shake(4);
   await wait(0.25);
   await drop(l3, 0.05);
   g.audio.music('detective');

@@ -116,6 +116,8 @@ class Lab {
     this.sil = params.get('sil') === '1';
     this.speed = Number(params.get('speed') ?? 1) || 1;
     if (params.get('face') === '1') this.facing = 1;
+    this.lookX = Number(params.get('lx') ?? 0) || 0;
+    this.lookY = Number(params.get('ly') ?? 0) || 0;
     const id = params.get('id');
     this.sceneId = id && SCENES[id] ? id : 'trip';
     if (params.has('t')) this.playing = false;
@@ -624,6 +626,8 @@ class Lab {
         if (this.expr !== 'neutral') q.push(`expr=${this.expr}`);
         if (this.skel) q.push('skel=1');
         if (this.onion) q.push('onion=1');
+        if (this.lookX) q.push(`lx=${this.lookX}`);
+        if (this.lookY) q.push(`ly=${this.lookY}`);
       }
       if (this.mode === 'scenes') q.push(`id=${this.sceneId}`);
       if (this.sil && this.mode !== 'scenes') q.push('sil=1');

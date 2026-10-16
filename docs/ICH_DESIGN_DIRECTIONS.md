@@ -5,14 +5,16 @@ All three share the same fixed rules:
 
 - The word **ICH**, huge, on a featureless faceplate. No eyes or mouth.
 - His light colour is **amber**, the missing middle of the red/green Team_Aperture pair.
-- Detective kit: a hat that is slightly wrong, a brass magnifying glass, a notebook.
+- Detective kit: a hat that is slightly wrong, a brass magnifying glass, a notebook (in the prototype the
+  notebook exists only as the UI case file, *Fallakte*; none of the three designs draws it yet).
 - He must not look like V-TGM (circle) or R-3MI (tall line), so all three are built from rectangles and triangles.
 - Nothing is borrowed from an existing detective character: no deerstalker-and-pipe silhouette, no
   trench-coat-and-gadget-arms, no cartoon dog, no hat brim covering the face.
 
-All three are built on **the same skeleton** in this prototype. They can be compared side by side, walking
-and idling, in the **Animation Lab** (*Animationslabor → Aufstellung* for the lineup, *Clips* with Figur „ICH · B" or „ICH · C" for single clips). You can also play the whole chapter
-with any of them (*Einstellungen → ICH-Entwurf*). Direction A is the default.
+All three are built on **the same skeleton** in this prototype. In the **Animation Lab** they stand side by
+side, idling, in *Animationslabor → Aufstellung*; *Clips* shows one at a time (Figur „ICH · A/B/C"), walking
+or in any clip. Side by side walking: `?dev=pose&c=ich,ich-b,ich-c&clip=walk&face=-1`. You can also play the
+whole chapter with any of them (*Einstellungen → ICH-Entwurf*). Direction A is the default.
 
 | | A · „Das Namensschild" | B · „Der Aktenschrank" | C · „Das Periskop" |
 | --- | --- | --- | --- |
@@ -29,7 +31,8 @@ with any of them (*Einstellungen → ICH-Entwurf*). Direction A is the default.
 ## Recommendation: A, „Das Namensschild"
 
 1. **Legibility.** The landscape plate is the largest flat surface of any of the three, so the word stays
-   readable on a phone in landscape at the smallest camera zoom (letters ≈ 30 CSS px tall).
+   readable on a phone in landscape at the smallest camera zoom the chapter uses (letters ≈ 22–26 CSS px
+   tall on a typical landscape phone at zoom 0.85–1; B's ≈ 20–24, C's ≈ 16–20).
 2. **Contrast with the canon pair.** A wide rectangle over a triangle is the furthest silhouette from both
    a sphere and a vertical line. In a lineup the three read as three different shapes from across the room.
 3. **Body comedy.** The faceless joke needs a body that can act. Long thin limbs, big gloves, big shoes and a
@@ -37,6 +40,9 @@ with any of them (*Einstellungen → ICH-Entwurf*). Direction A is the default.
 4. **Airplane comedy.** A head that is wider than an airplane aisle is a gag generator for the whole game.
 5. **Cost.** Medium. The coat is one spring chain.
 
-B and C are fully playable in this prototype so the decision can be made on movement, not on a drawing.
+B and C are playable through the whole chapter, so the decision can be made on movement, not only on a
+drawing. Be aware that they run **A's clips** (with small adapters that fit them to their bodies) and that
+**none of the signature gags in the table is implemented yet** for any direction; the in-game comparison
+therefore favours A, whose clips they are.
 Whichever you choose, the final art for ICH should be drawn by an artist on top of the chosen rig
 (see [ANIMATION_PIPELINE.md](ANIMATION_PIPELINE.md)); the current art is a procedural placeholder.

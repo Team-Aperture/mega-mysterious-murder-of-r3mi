@@ -17,8 +17,8 @@ Legend: ✅ real (the system is done and meant to stay) · 🟡 placeholder (wor
 | Live vector features | Projected single eyes with lids, saccades, blinks and expression shapes; V-TGM's sphere projection; ICH's letters as a never-mirrored vector layer; LEDs |
 | Handedness | Asymmetric details stay on the correct limb when a character turns (used for R-3MI's left arm) |
 | Asset pipeline | One SVG rig sheet per character → per-device atlas; an artist's sheet in `art/authored/<id>.svg` replaces the generated one without code changes; the Lab exports the current sheet |
-| Cutscenes | Deterministic sequences (setup + timed events): skip lands in the exact end state, the Lab scrubs them, a test checks that a frame re-simulates pixel-identically; chained clips and prop hand-offs complete inside the simulation step (`onEnd`, `onDone`), so seeking matches playback |
-| Game loop | Fixed 1/30 s substeps and game-clock waits: slow devices keep real-time pace instead of slowing down |
+| Cutscenes | Deterministic sequences (setup + timed events): skip lands in the scene's end state, the Lab scrubs them, a test checks that a frame re-simulates pixel-identically; chained clips and prop hand-offs complete inside the simulation step (`onEnd`, `onDone`). Caveat: the trip and avalanche gags start in the game from ICH's current position with the follow camera, so their in-game framing can differ a little from the Lab's re-simulation |
+| Game loop | Substeps of at most 1/30 s and game-clock waits: the game keeps real-time pace down to about 10 fps; below that Pixi clamps frame time to 100 ms and the game slows down rather than skipping |
 | Cabin and camera | Parallax cabin, night lighting with reading lights, actor tinting by local light, camera with follow, lead, framing and scripted moves |
 | Dialogue | Typewriter timing with emphasis, speech bubbles anchored to heads (side placement for tall speakers), captain announcements, choices that cannot be mis-tapped, V-TGM in English with German subtitles (setting: German only) |
 | Game systems | Hotspots with markers (always on for touch), magnifier close-ups, case file, HUD, pause and settings, autosave and continue, end screen |
@@ -77,6 +77,10 @@ In short:
 
 ## 6. Known limitations
 
+- **The two slapstick gags are optional.** The seat struggle always plays, but the trip only happens if ICH
+  walks over R-3MI's legs and the avalanche only if the player opens bin 15; three clues can be found
+  without either (the end screen reports both).
+
 - **ICH B and C use A's clips.** They share the skeleton and every clip, so a few poses were authored for
   A's body: in *nervous*, *brushOff* and *sit* the near glove floats in front of the body (A too); B's far arm
   is mostly hidden behind the wide cabinet; C's telescope pushes the plate into the overhead-bin band during
@@ -84,8 +88,12 @@ In short:
   folder tabs and C's cape are not caught. Per-design clip overrides are supported (a variant can replace a
   clip by name) once a direction is chosen.
 
-- Software-rendered headless browsers run the game well below 60 fps; the fixed-step loop keeps game time
-  correct but the end-to-end tests take a few minutes.
+- Software-rendered headless browsers run the game at about 4–5 fps, so game time runs at roughly 0.4× real
+  time there and the end-to-end tests take a few minutes (the simulation stays stable). Performance on real
+  devices (atlas memory, fill rate, fps) has not been measured yet; the ending's passing shadow uses one blur
+  filter.
 - Real phones have not been tested yet (only emulated viewports with touch input).
-- Accessibility: keyboard play, focus handling and reduced motion are supported; screen-reader support is
-  basic (dialogue is announced, the canvas is not described).
+- Accessibility: the game is playable with the keyboard (walk, examine, dialogue, choices; F, M, Esc for the
+  case file, sound and menu; Tab moves focus in menus and settings and shows the markers in the cabin), and
+  reduced motion is supported; screen-reader support is basic (dialogue is announced, the canvas is not
+  described).

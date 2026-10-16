@@ -9,8 +9,8 @@ The trio's shape and colour language is designed as one system:
 
 | | Shape | Light colour | Height (rig units, 1 m = 400) | Role in a scene |
 | --- | --- | --- | --- | --- |
-| **V-TGM** | circle | red | ≈ 380 (0.95 m) | the one who notices |
-| **ICH** | rectangle on a triangle | amber | ≈ 640 (1.6 m incl. hat) | the one who is sure |
+| **V-TGM** | circle | red | ≈ 475 in the game (1.19 m; sheet 380, drawn at 1.25×) | the one who notices |
+| **ICH** | rectangle on a triangle | amber | ≈ 690 (1.73 m incl. hat, design A) | the one who is sure |
 | **R-3MI** | tall vertical line, egg on top | green | ≈ 880 (2.2 m) | the one who suffers |
 
 Red, amber, green: the three of them standing in a row are a traffic light. Nobody in the game ever
@@ -35,7 +35,8 @@ mentions it.
   crown to a junction just behind the head, a second hoop from there to the tank-top socket, and a
   bright, fluid-filled green hose from the tank's back-bottom corner that bows out behind his left
   upper arm and plugs into the back of his left elbow.
-- Adaptation: proportions pushed slightly lankier (longer shins and forearms) for airplane comedy.
+- Adaptation: proportions follow the portrait; in the placeholder rig the shins are slightly longer and the
+  torso slightly long (see STATUS.md §4), to be settled in the authored redraw.
   Rendering is clean cartoon cel shading instead of the portrait's painterly airbrush.
 
 ### Personality and dialogue tone
@@ -57,7 +58,8 @@ mentions it.
 - Long, loping stride, heel-heavy; the head bobs on a slight delay (neck is the spring).
 - Leans forward from the hips; his walk "falls" forward and catches itself.
 - His arms swing late and wide. Fingers trail.
-- In the cabin he never stands at full height: a constant 10–15° stoop with the head cocked.
+- In the cabin he never stands quite at full height: a slight stoop (about 4° in the torso) with the neck and
+  head tipped a few degrees more. (A deeper stoop is a target for the authored animation.)
 
 ### Emotional reactions (optic + body)
 | Emotion | Eye | Body |
@@ -96,7 +98,7 @@ mentions it.
 - Sample: *"It's written on his face. In font size nine hundred."* / „Es steht ihm im Gesicht. In Schriftgröße neunhundert."
 
 ### Typical gestures
-- The **eye-roll**: the iris travels a full circle around the socket. Her signature.
+- The **eye-roll**: the iris arcs up and over the top of the socket and back down. Her signature.
 - The **facepalm**: one huge hand covers most of the sphere.
 - Eye narrows to a slit, and holds. The longer the hold, the funnier.
 - Arms folded *behind* the sphere (she cannot fold them in front; there is no front to fold over).
@@ -201,7 +203,8 @@ mentions it.
 **R-3MI**
 - One green eye. Tall. Egg helmet. Green tank backpack. Speaks German.
 - The ringed shoulder disk, the ringed elbow and the fluid hose belong to his **left** arm, under the
-  tank (never mirrored onto the right arm, never on the front edge of the chest).
+  tank (never mirrored onto the right arm). In the facing-left (canon) view they are never on the front edge of
+  the chest; facing right, his left arm is the far one, so they are on the far arm.
 - Uses only V-TGM's designation. Never cruel.
 
 **V-TGM**

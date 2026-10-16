@@ -3,7 +3,7 @@ import { CanvasSource, Rectangle, Texture } from 'pixi.js';
 /**
  * Rig sheet → texture atlas.
  *
- * RIG SHEET FORMAT (what an artist delivers, or what `src/art/sheets/*` generates):
+ * RIG SHEET FORMAT (what an artist delivers, or what `src/characters/<id>/sheet*.ts` generates):
  *   - one SVG document, the character in its rest pose, facing right, feet on y = 0,
  *     1080p reference units (400 units = 1 m), viewBox covering the character;
  *   - one top-level-or-nested `<g id="part:<partId>">` per drawable part, drawn in place

@@ -38,7 +38,7 @@ npm run build        # static site in dist/ (no server code, no paid services)
 npm run preview      # serve the build on :4173
 ```
 
-Requirements: Node 20+ and a browser with WebGL. Tested so far in Chromium (desktop and emulated phones,
+Requirements: Node 20.19+ or 22.12+ (Vite 7) and a browser with WebGL. Tested so far in Chromium (desktop and emulated phones,
 including touch); Firefox, Safari and real phones are still to be tested. Landscape is recommended on phones.
 
 ## Play
@@ -60,11 +60,15 @@ Open it from the title menu (*Animationslabor*) or at `/?lab`.
 - **Clips:** any character and clip, including the IK walk. Play, pause, scrub, 0.1×–2× speed and single
   frame steps. Overlays for the skeleton and pivots, onion skin and silhouette. Expressions and eye
   direction. You can also download the rig sheet as SVG for an artist.
-- **Szenen:** every cutscene of Chapter 0 on a timeline with clickable event markers. Rewinding
-  re-simulates from zero, so each frame is exactly what the game shows.
+- **Szenen:** the seven cutscene sequences of Chapter 0 (opening to ending) on a timeline with clickable
+  event markers. Rewinding re-simulates the scene from its own start state, so a frame is reproducible.
+  The two gags (trip, avalanche) start in the game from wherever ICH happens to be, with the follow
+  camera, so their framing in the game can differ a little from the Lab. The title sequence and the
+  interactive meeting run only in the game.
 - **Aufstellung:** all characters, including the three ICH directions, side by side with a height chart.
 
-The state lives in the URL, so a view can be shared, e.g. `/?lab&mode=clips&c=r3mi&clip=clap&t=0.6&skel=1`.
+The view (character, clip, time, overlays, expression, eye direction, facing, speed, scene) lives in the
+URL, so it can be shared, e.g. `/?lab&mode=clips&c=r3mi&clip=clap&t=0.6&skel=1`.
 
 ## Development
 
@@ -93,5 +97,5 @@ Developer routes: `?dev=sheet&c=<id>` (raw rig sheet), `?dev=pose&c=<id>&clip=<c
 ## Credits
 
 Team_Aperture. Characters R-3MI and V-TGM © Team_Aperture (from *Kalibrierungsanlage II*); ICH is
-new for this game. Fonts: Bungee, Nunito, Special Elite and Luckiest Guy (SIL Open Font License, via
-@fontsource).
+new for this game. Fonts via @fontsource: Bungee and Nunito (SIL Open Font License 1.1), Special Elite and
+Luckiest Guy (Apache License 2.0).

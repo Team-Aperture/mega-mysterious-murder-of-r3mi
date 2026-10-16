@@ -501,7 +501,9 @@ export class Game {
       if (this.dialogue.advance()) { e.preventDefault(); return; }
       if (this.controlOn && this.nearest) { e.preventDefault(); void this.useHotspot(this.nearest); return; }
     }
-    if (k === 'Tab' && down) { e.preventDefault(); document.body.classList.toggle('markers'); return; }
+    // Tab shows the hotspot markers, but only in the cabin: in menus, settings and overlays it
+    // must keep moving keyboard focus (otherwise keyboard-only players are stuck on one button)
+    if (k === 'Tab' && down && this.controlOn && !document.querySelector('.overlay, .menu')) { e.preventDefault(); document.body.classList.toggle('markers'); return; }
     if (['ArrowLeft', 'ArrowRight', 'a', 'd', 'A', 'D'].includes(k)) {
       e.preventDefault();
       const key = k.toLowerCase().replace('arrow', '');

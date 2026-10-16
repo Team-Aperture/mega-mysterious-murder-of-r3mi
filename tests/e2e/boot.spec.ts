@@ -14,6 +14,10 @@ test('boarding gate, title sequence and menu', async ({ page }) => {
   const board = ((await page.locator('.board').textContent()) ?? '').replace(/[\s\u00a0]+/g, ' ');
   expect(board).toContain('BOARDING BEENDET');
   expect(board).not.toMatch(/GESTARTET|ABGEFLOGEN|DEPARTED/);
+  // keyboard: Tab moves focus through the menu (it only toggles hotspot markers in the cabin)
+  await expect(page.locator('.menu .btn').first()).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('.menu .btn').nth(1)).toBeFocused();
   // settings open and close
   await page.locator('.menu .btn', { hasText: 'Einstellungen' }).click();
   await expect(page.locator('.overlay .panel')).toBeVisible();

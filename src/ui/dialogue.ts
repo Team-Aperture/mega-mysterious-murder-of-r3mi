@@ -61,7 +61,7 @@ export interface DialogueDeps {
   margins(): { top: number; bottom: number };
 }
 
-export interface DialogueSettings { speed: number; vtgmGerman: boolean; reduced: boolean }
+export interface DialogueSettings { speed: number; reduced: boolean }
 
 export class Dialogue {
   readonly layer = h('div', { class: 'bubbles', 'aria-live': 'polite' });
@@ -71,7 +71,7 @@ export class Dialogue {
   private choiceEl: HTMLElement | null = null;
   private pending = 0;
   private timers: { left: number; done: () => void }[] = [];
-  settings: DialogueSettings = { speed: 1, vtgmGerman: false, reduced: false };
+  settings: DialogueSettings = { speed: 1, reduced: false };
 
   constructor(readonly root: HTMLElement, readonly deps: DialogueDeps) {
     root.append(this.layer, this.paEl);
@@ -234,10 +234,8 @@ export class Dialogue {
     return new Promise((r) => { this.timers.push({ left: s, done: r }); });
   }
 
+  /** V-TGM always speaks English, with the German line as a subtitle (team decision, canon). */
   private textFor(line: Line): { text: string; sub?: string } {
-    if (line.who === 'vtgm' && line.sub) {
-      return this.settings.vtgmGerman ? { text: line.sub } : { text: line.text, sub: line.sub };
-    }
     return { text: line.text, sub: line.sub };
   }
 

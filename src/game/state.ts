@@ -22,8 +22,6 @@ export interface Settings {
   sfx: number;
   voice: number;
   textSpeed: number;
-  /** Canon: V-TGM speaks English with German subtitles. This switches her to German only. */
-  vtgmGerman: boolean;
   reducedMotion: boolean;
   /** ICH design direction for the whole chapter: 'a' | 'b' | 'c'. */
   ichDesign: 'a' | 'b' | 'c';
@@ -41,7 +39,7 @@ export function defaultProgress(): Progress {
 
 export function defaultSettings(): Settings {
   const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return { v: 1, music: 0.6, sfx: 0.8, voice: 0.7, textSpeed: 1, vtgmGerman: false, reducedMotion: reduced, ichDesign: 'a', muted: false };
+  return { v: 1, music: 0.6, sfx: 0.8, voice: 0.7, textSpeed: 1, reducedMotion: reduced, ichDesign: 'a', muted: false };
 }
 
 function read<T>(key: string): unknown {
@@ -87,7 +85,6 @@ export function normaliseSettings(x: unknown): Settings {
     sfx: num(o.sfx, 0, 1, d.sfx),
     voice: num(o.voice, 0, 1, d.voice),
     textSpeed: num(o.textSpeed, 0.5, 2.5, d.textSpeed),
-    vtgmGerman: o.vtgmGerman === true,
     reducedMotion: typeof o.reducedMotion === 'boolean' ? o.reducedMotion : d.reducedMotion,
     ichDesign: o.ichDesign === 'b' || o.ichDesign === 'c' ? o.ichDesign : 'a',
     muted: o.muted === true,

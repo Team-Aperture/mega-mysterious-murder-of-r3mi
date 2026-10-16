@@ -160,7 +160,7 @@ export class Game {
     this.audio.volumes = { music: s.music, sfx: s.sfx, voice: s.voice };
     this.audio.muted = s.muted;
     this.audio.apply();
-    this.dialogue.settings = { speed: s.textSpeed, vtgmGerman: s.vtgmGerman, reduced: s.reducedMotion };
+    this.dialogue.settings = { speed: s.textSpeed, reduced: s.reducedMotion };
     document.body.classList.toggle('reduced', s.reducedMotion);
     this.cam.calm = s.reducedMotion;
     saveSettings(s);

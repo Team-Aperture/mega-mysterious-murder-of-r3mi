@@ -20,7 +20,7 @@ Legend: ✅ real (the system is done and meant to stay) · 🟡 placeholder (wor
 | Cutscenes | Deterministic sequences (setup + timed events): skip lands in the scene's end state, the Lab scrubs them, a test checks that a frame re-simulates pixel-identically; chained clips and prop hand-offs complete inside the simulation step (`onEnd`, `onDone`). Caveat: the trip and avalanche gags start in the game from ICH's current position with the follow camera, so their in-game framing can differ a little from the Lab's re-simulation |
 | Game loop | Substeps of at most 1/30 s and game-clock waits: the game keeps real-time pace down to about 10 fps; below that Pixi clamps frame time to 100 ms and the game slows down rather than skipping |
 | Cabin and camera | Parallax cabin, night lighting with reading lights, actor tinting by local light, camera with follow, lead, framing and scripted moves |
-| Dialogue | Typewriter timing with emphasis, speech bubbles anchored to heads (side placement for tall speakers), captain announcements, choices that cannot be mis-tapped, V-TGM in English with German subtitles (setting: German only) |
+| Dialogue | Typewriter timing with emphasis, speech bubbles anchored to heads (side placement for tall speakers), captain announcements, choices that cannot be mis-tapped, V-TGM always in English with German subtitles |
 | Game systems | Hotspots with markers (always on for touch), magnifier close-ups, case file, HUD, pause and settings, autosave and continue, end screen |
 | Audio engine | WebAudio synthesiser behind a gesture gate: ambience, about 25 effects, character babble, music loops, volume and mute |
 | Animation Lab | Clips (scrub, slow motion, frame step, skeleton/pivots, onion skin, silhouette, expressions, eye direction), cutscene replay with event markers, character lineup with a height chart; deep links |
@@ -64,15 +64,18 @@ In short:
 
 ## 5. Open questions ❓
 
-1. **ICH: A, B or C?** All three are playable through the whole chapter (*Einstellungen → ICH-Entwurf*) and
-   compared side by side in the Lab (*Aufstellung*). Recommendation: A (see [ICH_DESIGN_DIRECTIONS.md](ICH_DESIGN_DIRECTIONS.md)).
-2. **ICH's handedness.** ICH has no canon art yet. His near arm currently hangs at the front edge of his body
-   (the magnifier hand). Once a design is chosen, its asymmetric details should be fixed in a model sheet.
-3. **V-TGM's language.** Canon says English; the brief asks for German dialogue. The prototype follows canon
-   with German subtitles and offers a German-only setting. Please confirm.
+1. ~~ICH: A, B or C?~~ **Decided: A „Das Namensschild"** (the trench-coat detective). It stays the default;
+   B and C stay in the prototype as explored alternatives (*Einstellungen → ICH-Entwurf*, Lab *Aufstellung*).
+2. **ICH's handedness.** With A chosen, its asymmetric details (magnifier hand, hat tilt, the coat's
+   double-breasting) should be fixed in a model sheet before the authored redraw.
+3. ~~V-TGM's language~~ **Decided: V-TGM always speaks English, with German subtitles** so everyone understands
+   her (as in canon). The German-only setting was removed.
 4. **The guests** (F-RØ5CHI, L-UX, B-RADF1SH, T-FLON14, ASP-1024, FAX-N, AGN-H3R): no reference art exists and
-   several seem to stand in for real people. They need the team's (and those people's) go-ahead before they
-   are designed or written.
+   several seem to stand in for real people. **The team will provide them when needed:** they are first needed
+   for **Chapter 1** (the cabin wakes up, R-3MI is declared murdered and ICH questions the passengers), at the
+   start of that chapter's design, before any of them is drawn or written. Needed then: the confirmed list,
+   each person's OK, and per guest a reference (photo or drawing of the unit, colours) and a few lines on their
+   personality. Chapter 0 keeps the sleepers anonymous.
 5. **Voice and music direction** for the real production.
 
 ## 6. Known limitations

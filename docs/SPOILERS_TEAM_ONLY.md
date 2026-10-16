@@ -9,7 +9,7 @@ Do not link this file from anything a player sees.
 - The power-down is shown in full: lids close, the eye dims to black, the tank bubbles slow down, the chest
   slot light starts a very slow standby blink (≈ one pulse every 4 s).
 - In the teaser the standby blink is still there for a moment, then stops (deeper sleep stage), so the
-  morning scene shows a fully dark R-3MI. A later chapter can reveal that the blink stops in deep sleep and
+  later night scene shows a fully dark R-3MI. A later chapter can reveal that the blink stops in deep sleep and
   restarts on its own.
 
 **What Chapter 0 adds as doubt** (so the player does not simply conclude "he is asleep")
@@ -32,6 +32,6 @@ altitude announcement. The only "takeoff" in the game will be the imagined one i
 | The seatbelt sign never goes off | overhead panels, examinable | the plane is waiting to taxi | "it's a bumpy night" |
 | The coffee surface is perfectly still | examinable cup | no vibration at all | ICH: „Dieser Pilot ist ein Genie." |
 | The cabin hum is constant and low | ambience | the APU, not engines at cruise | "engine noise" |
-| The title board says VERSPÄTET, then BOARDING ABGESCHLOSSEN, never ABGEFLOGEN | title sequence | true | a normal delay |
+| The title board says VERSPÄTET, then BOARDING BEENDET, never ABGEFLOGEN | title sequence | true | a normal delay |
 | ICH, examining the window: rain falls „nach unten. Exakt wie erwartet." | examine text | correct and the key clue | a non-deduction |
 | V-TGM looks at the window after the coffee deduction and says only *"Hm."* | investigation | she has noticed | nothing |

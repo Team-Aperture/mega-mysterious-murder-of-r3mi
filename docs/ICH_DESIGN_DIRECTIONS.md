@@ -28,6 +28,9 @@ whole chapter with any of them (*Einstellungen → ICH-Entwurf*). Direction A is
 | Animation cost | medium (coat secondary motion) | low (rigid body, drawers) | high (neck stretch, cape cloth) |
 | Risk | the head width needs care in tight framing | can read as "furniture" rather than "detective" | the long neck can read as creepy at night |
 
+> **Decision (team): A „Das Namensschild"** — the detective vibe stays as it is. B and C remain in the
+> prototype as explored alternatives.
+
 ## Recommendation: A, „Das Namensschild"
 
 1. **Legibility.** The landscape plate is the largest flat surface of any of the three, so the word stays

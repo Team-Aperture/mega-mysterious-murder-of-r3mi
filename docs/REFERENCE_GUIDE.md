@@ -77,8 +77,8 @@ These rules are stated explicitly in the earlier projects and are treated as non
 1. **R-3MI always speaks German. V-TGM always speaks English**, with a German subtitle, whatever the
    interface language (*Liebe auf den ersten Log*, README: "The two units follow Kalibrierungsanlage canon").
    V-TGM only switches to German to annoy R-3MI (KA-II: *„Sie hat gerade Deutsch gesprochen. Das macht sie nur,
-   wenn sie mich ärgern will."*). The game follows this by default; a German-only setting for V-TGM exists
-   for the team to try and is an open question (STATUS.md §5).
+   wenn sie mich ärgern will."*). **Team decision for this game: V-TGM always speaks English, with a German
+   subtitle** (no German lines, no German-only setting).
 2. The two address each other **only by designation**: R-3MI and V-TGM. No nicknames (*Pausenprotokoll* even
    validates every spoken line for this; this project keeps the rule by hand, there is no automatic check yet).
 3. R-3MI: "delighted about everything", optimistic, chatty, a bit obsessive, proud of small wins,

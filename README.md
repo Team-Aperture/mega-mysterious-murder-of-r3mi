@@ -50,8 +50,8 @@ including touch); Firefox, Safari and real phones are still to be tested. Landsc
 | Dialogue | click, <kbd>Space</kbd> or <kbd>Enter</kbd>; choices with <kbd>1</kbd>–<kbd>3</kbd> | tap |
 | Case file / sound / menu | <kbd>F</kbd> / <kbd>M</kbd> / <kbd>Esc</kbd> | buttons at the top |
 
-*Einstellungen* has volumes, text speed, V-TGM's language (canon: English with German subtitles),
-reduced motion and the ICH design direction (A, B or C).
+*Einstellungen* has volumes, text speed, reduced motion and the ICH design direction (A, the chosen one, or the
+alternatives B and C). V-TGM always speaks English with German subtitles.
 
 ## Animation Lab
 

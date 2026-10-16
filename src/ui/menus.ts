@@ -56,7 +56,6 @@ export function settingsPanel(g: Game, onClose?: () => void): void {
   row('Effekte', '', slider('sfx'));
   row('Stimmen', 'Synthetisches „Gebrabbel" der Figuren', slider('voice'));
   row('Textgeschwindigkeit', '', select('textSpeed', [['0.7', 'Langsam'], ['1', 'Normal'], ['1.5', 'Schnell'], ['2.2', 'Sehr schnell']], Number));
-  row('V-TGM', 'Kanon: V-TGM spricht Englisch (mit Untertitel)', select('vtgmGerman', [['false', 'Original (Englisch + Untertitel)'], ['true', 'Nur Deutsch']], (v) => v === 'true'));
   row('ICH-Entwurf', 'Drei Designrichtungen zur Auswahl (lädt neu)', select('ichDesign', [['a', 'A · Das Namensschild'], ['b', 'B · Der Aktenschrank'], ['c', 'C · Das Periskop']], (v) => v as 'a' | 'b' | 'c', () => { location.reload(); }));
   row('Bewegung reduzieren', 'Weniger Kamerafahrten, kein Wackeln', select('reducedMotion', [['false', 'Aus'], ['true', 'An']], (v) => v === 'true'));
   const done = h('button', { class: 'btn', text: 'Fertig', type: 'button' });

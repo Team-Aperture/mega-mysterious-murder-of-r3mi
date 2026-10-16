@@ -91,7 +91,9 @@ mentions it.
 
 ### Personality and dialogue tone
 - *Canon*: speaks **English** (always shown with a German subtitle), terse, exact, deadpan, observant.
-  Corrects people. Speaks German only to annoy R-3MI.
+  Corrects people. (In KA-II she speaks German only to annoy R-3MI; **in this game she always speaks
+  English, with German subtitles**: team decision.)
+- The team calls her **„Amy"** informally. In the game she is only ever V-TGM (designations only).
 - *Spin-off*: she is the only competent passenger on Flight 303, and ICH is her personal test of patience.
   Her sarcasm escalates in clean steps: correction → one-word answer → eye-roll → facepalm → silence.
   With R-3MI she stays dry but kind; she is the one who says good night.
@@ -131,7 +133,7 @@ mentions it.
 
 ## ICH (new, spin-off only)
 
-### Visual design (recommended direction A, "Das Namensschild"; see [ICH_DESIGN_DIRECTIONS.md](ICH_DESIGN_DIRECTIONS.md))
+### Visual design (chosen direction A, "Das Namensschild"; see [ICH_DESIGN_DIRECTIONS.md](ICH_DESIGN_DIRECTIONS.md))
 - Head: a wide landscape **faceplate** (≈ 1.6 : 1) in an ochre/brass bezel with rivets, dark glass, and
   the word **ICH** in huge glowing amber block letters. No eyes, no mouth, nothing else, ever.
 - A tiny fedora perched on the top edge of the plate. It is too small for him. He does not know.
